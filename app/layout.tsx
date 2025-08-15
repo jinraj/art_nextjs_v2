@@ -36,7 +36,7 @@ export default function RootLayout({
       <body
         className={`${fontTitle.variable} ${fontBody.variable} antialiased min-h-screen bg-custom-white`}
       >
-        <div className="fixed top-0 left-0 w-full z-50">
+        <div className="fixed top-0 left-0 w-full z-100">
           <Navbar />
         </div>
         <main>{children}</main>
