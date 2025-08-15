@@ -1,0 +1,46 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nextjs-frontend-deployment
+  labels:
+    app: nextjs-frontend
+spec:
+  replicas: 1 # Start with 1 replica
+  selector:
+    matchLabels:
+      app: nextjs-frontend
+  template:
+    metadata:
+      labels:
+        app: nextjs-frontend
+    spec:
+      containers:
+      - name: nextjs-frontend
+        image: iimacr.azurecr.io/iim-docker-image-nextjs:v5 # IMPORTANT: Use your ACR name and image tag
+        ports:
+        - containerPort: 3000 # Next.js default port
+        env:
+          # Example: Environment variable for backend API URL
+          # Replace 'nodejs-backend-service:5000' with the actual internal service name and port
+          # This URL is used by your Next.js frontend to talk to the backend
+        - name: NEXT_PUBLIC_API_URL # Or whatever env var your Next.js app uses for backend API
+          value: "http://nodejs-backend-service:5000" # Internal cluster DNS for the backend service
+          # Add any other environment variables your Next.js frontend needs
+          # E.g., for production, you might set a specific hostname for the frontend
+        - name: NEXTAUTH_URL
+          value: "http://172.214.16.200"
+        - name: NODE_ENV
+          value: "production"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: nextjs-frontend-service
+spec:
+  selector:
+    app: nextjs-frontend
+  ports:
+    - protocol: TCP
+      port: 80 # Standard HTTP port for external access
+      targetPort: 3000 # The port your Next.js application is running on inside the container
+  type: LoadBalancer # Use LoadBalancer to expose frontend to the internet
