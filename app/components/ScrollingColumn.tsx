@@ -8,7 +8,8 @@ export const ScrollingColumn = ({ images, divHeight }: { images: any[], divHeigh
   useEffect(() => {
     if (animatedColumnRef.current) {
       // Generate a random duration between 20 and 40 seconds
-      const duration = Math.random() * 20 + 20;
+      const duration = Math.random() * 20 + 80;
+      console.log("scroll speed", duration)
       animatedColumnRef.current.style.animationDuration = `${duration}s`;
     }
   }, []);

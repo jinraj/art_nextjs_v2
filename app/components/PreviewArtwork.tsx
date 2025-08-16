@@ -7,7 +7,7 @@ export const PreviewArtwork = ({ artwork, onClose }) => {
     const mainImageUrl = artwork.images[selectedImageIndex];
 
     return (
-        <div className="fixed inset-0 z-50 bg-black bg-opacity-80 flex items-center justify-center p-4">
+        <div className="fixed inset-0 z-500 bg-black bg-opacity-80 flex items-center justify-center p-4">
             <div className="relative bg-white rounded-xl shadow-2xl max-w-7xl w-full h-full md:h-5/6 flex flex-col overflow-hidden">
                 {/* Close Button */}
                 <button

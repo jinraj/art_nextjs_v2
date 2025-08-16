@@ -13,24 +13,26 @@ function shuffleArray(array: any[]) {
   return array;
 }
 
-// Chunk into smaller arrays
-function chunkArray(array: any[], size: number) {
-  const chunkedArr = [];
-  let index = 0;
-  while (index < array.length) {
-    chunkedArr.push(array.slice(index, size + index));
-    index += size;
-  }
-  return chunkedArr;
+function splitIntoGroups(array: any[], groupsCount: number) {
+  const result: any[][] = Array.from({ length: groupsCount }, () => []);
+  array.forEach((item, index) => {
+    result[index % groupsCount].push(item);
+  });
+  return result;
 }
 
 export default function ArtworkGallery() {
-  const shuffledArtworks = shuffleArray([...artworks]);
-  const chunkedArtworks = chunkArray(shuffledArtworks, 2).slice(0, 5);
+  const [chunkedArtworks, setChunkedArtworks] = React.useState<any[][]>([]);
+
+  React.useEffect(() => {
+    const shuffled = shuffleArray([...artworks]);
+    const chunked = splitIntoGroups(shuffled, 5);
+    console.log("chunkedArtworks", chunked)
+    setChunkedArtworks(chunked);
+  }, []);
 
   return (
     <div className="container mx-auto pb-10 pt-0 px-4">
-      {/* Animation */}
       <style>{`
         @keyframes scroll-up {
           from {
