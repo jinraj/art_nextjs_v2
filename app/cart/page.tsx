@@ -6,31 +6,31 @@ import { Minus, Plus, ShoppingCart } from 'lucide-react';
 import TitleLayout from '../components/TitleLayout';
 
 const initialCartItems = [
-    {
-      id: 1,
-      name: 'The Ocean Abstraction',
-      artist: 'Alex Chen',
-      price: 75000,
-      image: '/resources/artworks/paintings/0db4ec40387045d7b3fb6caa2b32ac3a.jpg',
-      quantity: 1,
-    },
-    {
-      id: 2,
-      name: 'Vibrant Cityscape',
-      artist: 'Maria Rodriguez',
-      price: 52000,
-      image: '/resources/artworks/paintings/image3_1.jpg',
-      quantity: 2,
-    },
-    {
-      id: 3,
-      name: 'Geometric Sunset',
-      artist: 'John Doe',
-      price: 35000,
-      image: '/resources/artworks/photography/photo7_1.jpg',
-      quantity: 1,
-    },
-  ];
+  {
+    id: 1,
+    name: 'The Ocean Abstraction',
+    artist: 'Alex Chen',
+    price: 75000,
+    image: '/resources/artworks/paintings/0db4ec40387045d7b3fb6caa2b32ac3a.jpg',
+    quantity: 1,
+  },
+  {
+    id: 2,
+    name: 'Vibrant Cityscape',
+    artist: 'Maria Rodriguez',
+    price: 52000,
+    image: '/resources/artworks/paintings/image3_1.jpg',
+    quantity: 2,
+  },
+  {
+    id: 3,
+    name: 'Geometric Sunset',
+    artist: 'John Doe',
+    price: 35000,
+    image: '/resources/artworks/photography/photo7_1.jpg',
+    quantity: 1,
+  },
+];
 
 
 // Define the type for cart item
@@ -61,40 +61,39 @@ const CartItem: React.FC<CartItemProps> = ({ item, onUpdateQuantity, onRemove })
   }, [item.price]);
 
   return (
-    <div className="flex flex-col md:flex-row items-center border-b border-[var(--custom-silver)] py-6">
+    <div className="flex flex-row space-x-5 items-center border-b border-[var(--custom-silver)] py-6">
       {/* Item Image */}
-      <div className="w-full md:w-1/4 mb-4 md:mb-0 md:mr-6 flex-shrink-0">
+      <div className="w-1/3 md:w-1/5 mb-4 md:mb-0 md:mr-6 flex-shrink-0">
         <Image
           src={item.image}
           alt={item.name}
           width={70}
           height={120}
-          className="w-full h-90 md:h-48 object-cover rounded-xl shadow-lg"
+          className="w-full h-50 md:h-48 object-cover rounded-xl shadow-lg"
         />
       </div>
 
       {/* Item Details and Controls */}
       <div className="flex-1 w-full md:w-auto">
-        <div className="flex justify-between items-start mb-2">
-          <div>
-            <h3 className="text-sm text-custom-paynes-gray">{item.name}</h3>
-            <p className="text-xs text-custom-silver">by {item.artist}</p>
-          </div>
-          <div className="text-md font-semibold text-custom-paynes-gray">
-            INR.{formattedPrice}
-          </div>
+
+        <div>
+          <h3 className="text-sm text-custom-paynes-gray">{item.name}</h3>
+          <p className="text-xs text-custom-silver">by {item.artist}</p>
+        </div>
+        <div className="text-md font-semibold text-custom-paynes-gray my-5">
+          INR.{formattedPrice}
         </div>
 
         {/* Quantity Controls and Remove Button */}
-        <div className="flex items-center justify-between mt-4">
-          <div className="flex items-center space-x-2 border border-[var(--custom-silver)] rounded-full px-2 py-1">
+        <div className="flex  mt-4">
+          <div className="flex items-center space-x-2 border border-[var(--custom-silver)] rounded-full px-5 py-3">
             <button
               onClick={() => onUpdateQuantity(item.id, item.quantity - 1)}
               className="text-custom-silver hover:text-custom-paynes-gray focus:outline-none disabled:opacity-50"
               disabled={item.quantity <= 1}
               aria-label="Decrease quantity"
             >
-              <Minus size={16} />
+              <Minus size={20} />
             </button>
             <span className="text-sm font-semibold text-custom-paynes-gray w-6 text-center">
               {item.quantity}
@@ -104,12 +103,12 @@ const CartItem: React.FC<CartItemProps> = ({ item, onUpdateQuantity, onRemove })
               className="text-custom-silver hover:text-custom-paynes-gray focus:outline-none"
               aria-label="Increase quantity"
             >
-              <Plus size={16} />
+              <Plus size={20} />
             </button>
           </div>
           <button
             onClick={() => onRemove(item.id)}
-            className="text-red-500 hover:text-red-700 font-medium text-sm focus:outline-none"
+            className="text-red-500 hover:text-red-700 font-medium text-sm focus:outline-none ml-6 sm:ml-10"
           >
             Remove
           </button>
@@ -161,7 +160,7 @@ export default function CartPage() {
   }, [subtotal, tax, total]);
 
   return (
-    <div className="font-[Poppins] p-4 md:p-12 min-h-screen">
+    <div className="font-[Poppins] md:p-12 min-h-screen">
       <TitleLayout title="Your Shopping Cart" quote="" />
 
       <div className="container mx-auto">

@@ -10,9 +10,9 @@ export const AboutArtist = () => {
         <footer className="bg-custom-paynes-gray text-custom-white py-16 px-4 md:px-8 lg:px-12">
             <div className="container mx-auto max-w-6xl">
                 <h2 className="text-3xl md:text-4xl font-bold text-center mb-6">Meet the Artists</h2>
-                <div className="flex flex-col md:flex-row justify-center py-10">
+                <div className="flex flex-col md:flex-row justify-center py-10 ">
                     {/* Profile for Ramachandra */}
-                    <div className="flex flex-col items-center text-center md:w-1/2">
+                    <div className="flex flex-col items-center text-center md:w-1/2 mb-10 md:mb-0">
                         <div className="flex-shrink-0 mb-4">
                             <div className="relative w-48 h-48 mx-auto">
                                 <Image
@@ -26,7 +26,7 @@ export const AboutArtist = () => {
                         <h3 className="text-md font-bold">Ramachandra</h3>
                     </div>
                     {/* Profile for Jinraj */}
-                    <div className="flex flex-col items-center text-center md:w-1/2 mb-12 md:mb-0">
+                    <div className="flex flex-col items-center text-center md:w-1/2 ">
                         <div className="flex-shrink-0 mb-4">
                             <div className="relative w-48 h-48 mx-auto">
                                 <Image
