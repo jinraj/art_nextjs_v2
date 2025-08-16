@@ -1,10 +1,28 @@
+import { Copy, Heart, ShoppingCart, X } from "lucide-react";
+import Image from "next/image";
 import { useState } from "react";
+import { FaWhatsapp } from "react-icons/fa";
 
 export const PreviewArtwork = ({ artwork, onClose }) => {
     const [selectedImageIndex, setSelectedImageIndex] = useState(0);
     const [isLiked, setIsLiked] = useState(false);
-
     const mainImageUrl = artwork.images[selectedImageIndex];
+    const [likes, setLikes] = useState(artwork.likes);
+
+    const copyUrl = () => {
+        navigator.clipboard.writeText(window.location.href);
+        alert("Link copied to clipboard!");
+    };
+
+    const shareOnWhatsApp = () => {
+        const url = `https://api.whatsapp.com/send?text=Checkoutthisartwork:${window.location.href}`;
+        window.open(url, "_blank");
+    };
+
+    const toggleLike = () => {
+        setIsLiked(!isLiked);
+        setLikes(prev => (isLiked ? prev - 1 : prev + 1));
+    };
 
     return (
         <div className="fixed inset-0 z-500 bg-black bg-opacity-80 flex items-center justify-center p-4">
@@ -12,18 +30,27 @@ export const PreviewArtwork = ({ artwork, onClose }) => {
                 {/* Close Button */}
                 <button
                     onClick={onClose}
-                    className="absolute top-4 right-4 text-custom-paynes-gray text-2xl z-20 bg-white rounded-full p-2 hover:bg-gray-200 transition-colors duration-200"
+                    className="absolute cursor-pointer top-4 right-4 text-custom-paynes-gray text-2xl z-20 bg-white rounded-full p-2 hover:bg-gray-200 transition-colors duration-200"
                     aria-label="Close"
                 >
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M18 6 6 18M6 6l12 12" /></svg>
+                    <X />
                 </button>
 
                 {/* Main Content: Scrollable Section */}
                 <div className="flex flex-col md:flex-row h-full overflow-y-auto">
                     {/* Left Side: Image */}
                     <div className="relative w-full md:w-3/5 flex-shrink-0 flex items-center justify-center">
-                        <img src={mainImageUrl} alt={artwork.title} className="w-full h-full object-contain" />
+                        <div className="relative w-full h-full">
+                            <Image
+                                src={mainImageUrl}
+                                alt={artwork.title}
+                                fill
+                                className="object-contain"
+                                priority // optional: ensures it loads quickly if it's the main image
+                            />
+                        </div>
                     </div>
+
 
                     {/* Right Side: Details */}
                     <div className="w-full md:w-2/5 p-8 flex flex-col">
@@ -31,59 +58,83 @@ export const PreviewArtwork = ({ artwork, onClose }) => {
                         {artwork.images.length > 1 && (
                             <div className="flex justify-start items-center gap-2 mb-4 overflow-x-auto p-2">
                                 {artwork.images.map((imgUrl, index) => (
-                                    <img
+                                    <div
                                         key={index}
-                                        src={imgUrl}
-                                        alt={`${artwork.title} thumbnail ${index + 1}`}
-                                        className={`w-12 h-12 object-cover rounded-full cursor-pointer border-2 transition-all duration-200
-                                            ${selectedImageIndex === index ? 'border-custom-amber' : 'border-transparent'}`}
+                                        className={`relative w-12 h-12 rounded-full cursor-pointer border-2 transition-all duration-200
+    ${selectedImageIndex === index ? 'border-custom-amber' : 'border-transparent'}`}
                                         onClick={() => setSelectedImageIndex(index)}
-                                    />
+                                    >
+                                        <Image
+                                            src={imgUrl}
+                                            alt={`${artwork.title} thumbnail ${index + 1}`}
+                                            fill
+                                            className="object-cover rounded-full"
+                                        />
+                                    </div>
+
+
                                 ))}
                             </div>
                         )}
 
-                        <h2 className="text-4xl font-bold text-custom-paynes-gray mb-2">{artwork.title}</h2>
-                        <p className="text-xl text-gray-600 mb-4">by {artwork.artistName}</p>
+                        {/* Artwork Details */}
+                        <h2 className="text-4xl font-bold text-custom-paynes-gray my-2">{artwork.title}</h2>
+                        <p className="text-sm text-gray-600 my-2">by {artwork.artistName}</p>
+                        <p className="text-sm my-5">{artwork.description}</p>
 
-                        <div className="space-y-4 text-sm text-gray-700 mt-4">
-                            <p>
-                                <span className="font-bold">Medium:</span> {artwork.medium}
-                            </p>
-                            <p>
-                                <span className="font-bold">Dimensions:</span> {artwork.dimension}
-                            </p>
-                            <p>
-                                <span className="font-bold">Price:</span> INR.{artwork.price}
-                            </p>
-                            <p className="mt-4 text-base leading-relaxed">
-                                <span className="font-bold">Description:</span> {artwork.description}
-                            </p>
+                        <div className="grid grid-cols-2 gap-4 text-sm border border-gray-200 rounded-xl p-3">
+                            <div>
+                                <span className="text-gray-500">Dimensions</span>
+                                <p className="text-gray-800 font-medium">{artwork.dimension}</p>
+                            </div>
+                            <div>
+                                <span className="text-gray-500">Medium</span>
+                                <p className="text-gray-800 font-medium">{artwork.medium}</p>
+                            </div>
+                            <div>
+                                <span className="text-gray-500">Price</span>
+                                <p className="text-gray-800 font-medium">INR. {artwork.price}</p>
+                            </div>
                         </div>
 
-                        <div className="mt-8 flex items-center justify-start">
-                            {/* Like Button */}
+                        <div className="flex gap-4 my-5 justify-between">
                             <button
-                                onClick={() => setIsLiked(!isLiked)}
-                                className={`flex items-center space-x-2 text-xl font-bold rounded-full py-2 px-6 transition-colors duration-300
-                                    ${isLiked ? 'bg-custom-amber text-white' : 'border border-gray-300 text-gray-500 hover:bg-gray-100'}`}
+                                className={`flex items-center space-x-2 text-md font-bold rounded-full transition-colors duration-300`}
                             >
-                                <svg
-                                    xmlns="http://www.w3.org/2000/svg"
-                                    width="24"
-                                    height="24"
-                                    viewBox="0 0 24 24"
-                                    fill={isLiked ? 'white' : 'none'}
-                                    stroke={isLiked ? 'white' : 'currentColor'}
-                                    strokeWidth="2"
-                                    strokeLinecap="round"
-                                    strokeLinejoin="round"
-                                >
-                                    <path d="M19.5 12.572C19.5 16.592 12 21 12 21s-7.5-4.408-7.5-8.428C4.5 9.092 6.572 7 9.15 7s5.35 2.092 5.35 2.092L12 11l-2.5-2c0 0-2.316-2.092-5-2.092S2 9.092 2 12.572C2 16.592 9.5 21 9.5 21S12 18.092 12 18.092z" />
-                                </svg>
-                                <span>{isLiked ? 'Liked' : 'Like'}</span>
+                                <Heart
+                                    onClick={toggleLike}
+                                    size={24}
+                                    className={`cursor-pointer transition-colors ${isLiked ? "fill-amber-400 stroke-amber-400" : "fill-none stroke-current"}`}
+                                />
+                            </button>
+                            <button
+                                className="flex items-center gap-2 cursor-pointer border border-custom-amber text-custom-amber font-bold py-2 px-5 rounded-full hover:bg-custom-amber hover:text-white transition"
+                            >
+                                <ShoppingCart size={20} /> Add to Cart
+                            </button>
+                            <button
+                                className="flex items-center gap-2 cursor-pointer bg-custom-amber text-white font-bold py-2 px-5 rounded-full shadow-md hover:opacity-90 transition"
+                            >
+                                Buy Now
                             </button>
                         </div>
+
+
+                        <div className="mt-8 flex justify-end">
+                            <div className="flex items-center gap-4">
+                                <FaWhatsapp
+                                    size={24}
+                                    className="text-gray-700 cursor-pointer"
+                                    onClick={shareOnWhatsApp}
+                                />
+                                <Copy
+                                    size={24}
+                                    className="text-gray-600 cursor-pointer"
+                                    onClick={copyUrl}
+                                />
+                            </div>
+                        </div>
+
                     </div>
                 </div>
             </div>

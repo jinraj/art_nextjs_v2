@@ -86,3 +86,7 @@ body {
 .text-custom-antiflash-white {
   color: var(--custom-antiflash-white);
 }
+
+.fill-custom-amber {
+  color: var(--custom-amber);
+}

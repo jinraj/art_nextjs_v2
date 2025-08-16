@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from 'react';
 import TitleLayout from '../components/TitleLayout';
-import { artType } from '../data/app';
+import { artType, artworksSeed } from '../data/app';
 import { ArtWork } from '../models/artwork';
 import ImageCard from '../components/ImageCard';
 
@@ -36,9 +36,11 @@ const Paintings = () => {
         }
 
         const data = await res.json();
-        const artworks: ArtWork[] = Array.isArray(data) ? data : data?.artworks || [];
+        // const artworks: ArtWork[] = Array.isArray(data) ? data : data?.artworks || [];
+        const artworks: ArtWork[] = artworksSeed;
 
         const filtered = artworks.filter(item => item.artType === artType.Paintings.name);
+        console.log("paintings", paintings);
         setPaintings(filtered);
       } catch (err) {
         console.error('Error fetching artworks:', err);

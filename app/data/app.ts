@@ -53,7 +53,7 @@ export const artType = {
 
 export const artTypes = [artType.Paintings.name, artType.Photography.name, artType.Decors.name, artType.Artifacts.name];
 
-export const artworks = [
+export const artworksSeed = [
     // ------------------- PAINTINGS (20) -------------------
     {
         id: 1,

@@ -2,6 +2,7 @@
 
 import React, { useState } from 'react';
 import { Menu, X } from 'lucide-react';
+import Image from 'next/image';
 
 // Define the navigation links in a reusable array
 const navLinks = [
@@ -33,8 +34,15 @@ export default function NavBar() {
                 {/* Logo Section */}
                 <div className="flex items-center">
                     {/* The logo is now a clickable link */}
-                    <a href="/">
-                        <img src="/resources/application/logo.png" alt="My Art" className="h-12 w-auto" />
+                    <a href="/" className="relative h-12 w-auto">
+                        <div className="relative h-12 w-[120px]"> {/* set width manually */}
+                            <Image
+                                src="/resources/application/logo.png"
+                                alt="My Art"
+                                fill
+                                className="object-contain"
+                            />
+                        </div>
                     </a>
                 </div>
 

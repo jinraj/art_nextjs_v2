@@ -1,5 +1,6 @@
 'use client';
 
+import Image from 'next/image';
 import React from 'react';
 
 export const AboutArtist = () => {
@@ -13,22 +14,28 @@ export const AboutArtist = () => {
                     {/* Profile for Ramachandra */}
                     <div className="flex flex-col items-center text-center md:w-1/2">
                         <div className="flex-shrink-0 mb-4">
-                            <img
-                                src="/resources/application/ramachandra.jpg"
-                                alt="Ramachandra's Profile"
-                                className="w-48 h-48 rounded-full object-cover shadow-lg mx-auto"
-                            />
+                            <div className="relative w-48 h-48 mx-auto">
+                                <Image
+                                    src="/resources/application/ramachandra.jpg"
+                                    alt="Ramachandra's Profile"
+                                    fill
+                                    className="rounded-full object-cover shadow-lg"
+                                />
+                            </div>
                         </div>
                         <h3 className="text-md font-bold">Ramachandra</h3>
                     </div>
                     {/* Profile for Jinraj */}
                     <div className="flex flex-col items-center text-center md:w-1/2 mb-12 md:mb-0">
                         <div className="flex-shrink-0 mb-4">
-                            <img
-                                src="/resources/application/jinraj.jpg"
-                                alt="Jinraj's Profile"
-                                className="w-48 h-48 rounded-full object-cover shadow-lg mx-auto"
-                            />
+                            <div className="relative w-48 h-48 mx-auto">
+                                <Image
+                                    src="/resources/application/jinraj.jpg"
+                                    alt="Jinraj's Profile"
+                                    fill
+                                    className="rounded-full object-cover shadow-lg mx-auto"
+                                />
+                            </div>
                         </div>
                         <h3 className="text-md font-bold">Jinraj</h3>
                     </div>
