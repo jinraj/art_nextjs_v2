@@ -5,28 +5,28 @@ import { DefaultSession, Session, SessionStrategy, User } from "next-auth";
 import { JWT } from "next-auth/jwt";
 
 declare module "next-auth" {
-  interface Session {
-    user: {
-      id: string;
-    } & DefaultSession["user"];
-  }
+    interface Session {
+        user: {
+            id: string;
+        } & DefaultSession["user"];
+    }
 
-  interface User {
-    id: string;
-  }
+    interface User {
+        id: string;
+    }
 }
 
 declare module "next-auth/jwt" {
-  interface JWT {
-    id?: string;
-  }
+    interface JWT {
+        id?: string;
+    }
 }
 
 export const authOptions = {
     providers: [
         CredentialsProvider({
             id: "domain-login",
-            name: 'Login Credentials',
+            name: 'Login',
             credentials: {
                 email: { label: "Email ID", type: "text" },
                 password: { label: "Password", type: "password" }
@@ -54,18 +54,21 @@ export const authOptions = {
         })
     ],
     callbacks: {
-        async jwt({ token, user }: {token: JWT, user?: User}) {
+        async jwt({ token, user }: { token: JWT, user?: User }) {
             if (user) {
                 token.id = user.id;
             }
             return token;
         },
-        async session({ session, token }: { session: Session; token: JWT;}) {
+        async session({ session, token }: { session: Session; token: JWT; }) {
             if (token && session.user) {
                 session.user.id = token.id as string;
             }
             return session;
         },
+    },
+    pages: {
+        signIn: "/login", // 👈 redirect to your custom login page
     },
     session: {
         strategy: "jwt" as SessionStrategy,
