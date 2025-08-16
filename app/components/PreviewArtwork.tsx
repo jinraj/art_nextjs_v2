@@ -40,15 +40,7 @@ export const PreviewArtwork = ({ artwork, onClose }) => {
                 <div className="flex flex-col md:flex-row h-full overflow-y-auto">
                     {/* Left Side: Image */}
                     <div className="relative w-full md:w-3/5 flex-shrink-0 flex items-center justify-center">
-                        <div className="relative w-full h-full">
-                            <Image
-                                src={mainImageUrl}
-                                alt={artwork.title}
-                                fill
-                                className="object-contain"
-                                priority // optional: ensures it loads quickly if it's the main image
-                            />
-                        </div>
+                        <img src={mainImageUrl} alt={artwork.title} className="w-full h-full object-contain" />
                     </div>
 
 

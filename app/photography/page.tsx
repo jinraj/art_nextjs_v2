@@ -6,15 +6,15 @@ import { artType, artworksSeed } from '../data/app';
 import { ArtWork } from '../models/artwork';
 import ImageCard from '../components/ImageCard';
 
-const Paintings = () => {
-  const [paintings, setPaintings] = useState<ArtWork[]>([]);
+const Photography = () => {
+  const [photography, setPhotography] = useState<ArtWork[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [randomQuote, setRandomQuote] = useState<string | null>(null);
 
   useEffect(() => {
     // This effect runs only on the client after initial mount (hydration)
-    const quotes = artType.Paintings.quotes;
+    const quotes = artType.Photography.quotes;
     const randomIndex = Math.floor(Math.random() * quotes.length);
     setRandomQuote(quotes[randomIndex]);
   }, []); // Empty dependency array ensures it runs once on mount
@@ -39,9 +39,9 @@ const Paintings = () => {
         // const artworks: ArtWork[] = Array.isArray(data) ? data : data?.artworks || [];
         const artworks: ArtWork[] = artworksSeed;
 
-        const filtered = artworks.filter(item => item.artType === artType.Paintings.name);
-        console.log("paintings", paintings);
-        setPaintings(filtered);
+        const filtered = artworks.filter(item => item.artType === artType.Photography.name);
+        console.log("photography", photography);
+        setPhotography(filtered);
       } catch (err) {
         console.error('Error fetching artworks:', err);
         setError((err as Error).message);
@@ -56,22 +56,22 @@ const Paintings = () => {
   return (
     <div className="min-h-screen">
       <TitleLayout
-        title={artType.Paintings.name}
-        quote={randomQuote || artType.Paintings.quotes[0]}
+        title={artType.Photography.name}
+        quote={randomQuote || artType.Photography.quotes[0]}
       />
       <div className="py-5 flex justify-center">
         {loading ? (
           <p className="text-gray-500">Loading...</p>
         ) : error ? (
           <p className="text-red-500">Error loading: {error}</p>
-        ) : paintings.length === 0 ? (
-          <p className="text-gray-500">No paintings available.</p>
+        ) : photography.length === 0 ? (
+          <p className="text-gray-500">No photography available.</p>
         ) : (
-          <ImageCard listOfArtworks={paintings} />
+          <ImageCard listOfArtworks={photography} />
         )}
       </div>
     </div>
   );
 };
 
-export default Paintings;
+export default Photography;

@@ -37,14 +37,14 @@ export default function ImageCard({ listOfArtworks }: ImageCardProps) {
       `}</style>
 
       {/* Gallery Grid Section */}
-      <div className="grid grid-cols-2 md:grid-cols-4 xl:grid-cols-5 gap-8">
+      <div className="grid grid-cols-2 md:grid-cols-4 xl:grid-cols-5 gap-6 w-full max-w-6xl px-4">
         {listOfArtworks.map((painting, index) => (
           <div key={index} onClick={() => openPreviewModal(painting)}>
             {/* The painting image container with background and shadow */}
             <div
               className="group relative cursor-pointer overflow-hidden rounded-xl shadow-lg hover:shadow-2xl transition-all duration-300 ease-in-out bg-white"
             >
-              <div className="relative w-full h-[230px] md:h-[250px] lg:h-[350px]">
+              <div className="relative w-full h-[230px] md:h-[250px] lg:h-[300px]">
                 <Image
                   src={painting.images[0]}
                   alt={painting.title}
