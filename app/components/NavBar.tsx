@@ -114,8 +114,8 @@ export default function NavBar() {
 
           <button
             onClick={() => {
-              setIsMobileMenuOpen(false); // close the menu
-              router.push("/auth/login"); // then navigate
+              setIsMobileMenuOpen(false);
+              router.push("/auth/login");
             }}
             className="mt-8 px-6 py-2 cursor-pointer rounded-full text-lg font-semibold bg-custom-amber text-custom-white transition-all duration-300 transform hover:scale-105">
             Login
