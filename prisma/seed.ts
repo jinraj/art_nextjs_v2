@@ -1,5 +1,5 @@
 import { PrismaClient } from '@prisma/client';
-import { mockArtworks } from '../app/data/mockData';
+import { mockArtworks } from '../app/data/seedMockData';
 
 const prisma = new PrismaClient();
 
@@ -9,7 +9,7 @@ async function main() {
   // Step 1: Delete all existing artworks
   try {
     console.log(`Deleting all the existing artworks...`);
-    const deleteResult = await prisma.artWork.deleteMany({});
+    const deleteResult = await prisma.artwork.deleteMany({});
     console.log(`Deleted ${deleteResult.count} existing artworks.`);
   } catch (error) {
     console.error('Error deleting existing artworks:', error);
@@ -22,7 +22,8 @@ async function main() {
   // Step 2: Insert new artworks
   try {
     console.log(`Inserting ${mockArtworks.length} artworks...`);
-    await prisma.artWork.createMany({
+
+    await prisma.artwork.createMany({
       data: mockArtworks,
     });
     console.log(`Inserted ${mockArtworks.length} new artworks.`);

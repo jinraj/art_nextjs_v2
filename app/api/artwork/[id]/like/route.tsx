@@ -36,7 +36,7 @@ export async function PUT(request: NextRequest, context: any) {
     recent.push(now);
     requestLog.set(ipKey, recent);
 
-    const existing = await prisma.artWork.findUnique({ where: { id } });
+    const existing = await prisma.artwork.findUnique({ where: { id } });
     if (!existing) {
       return NextResponse.json({ error: "Artwork not found" }, { status: 404 });
     }
@@ -44,7 +44,7 @@ export async function PUT(request: NextRequest, context: any) {
     const likedArtworks = ipLikeMap.get(ip) || new Set<string>();
     const likeAction = likedArtworks.has(id) ? { decrement: 1 } : { increment: 1 };
 
-    const updated = await prisma.artWork.update({
+    const updated = await prisma.artwork.update({
       where: { id },
       data: { likes: likeAction },
       select: { likes: true },

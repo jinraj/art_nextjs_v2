@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
-import { ArtWork } from '../models/artwork';
+import { Artwork } from '../models/artwork';
 // import PreviewArtworkPage from './PreviewArtwork';
 import Image from 'next/image';
 import { PreviewArtwork } from './PreviewArtwork';
@@ -15,7 +15,7 @@ const colorStyles = `
 `;
 
 interface ImageCardProps {
-  listOfArtworks: ArtWork[];
+  listOfArtworks: Artwork[];
 }
 
 export default function ImageCard({ listOfArtworks }: ImageCardProps) {

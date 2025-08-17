@@ -11,7 +11,7 @@ export async function GET(request: NextRequest) {
   try {
     console.log("Fetching artworks...");
 
-    const artworks = await prisma.artWork.findMany();
+    const artworks = await prisma.artwork.findMany();
     if (!artworks || artworks.length === 0) {
       return NextResponse.json({ message: "No artworks found" }, { status: 404 });
     }
@@ -50,7 +50,7 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: validation.error.format() }, { status: 400 });
     }
 
-    const newArtwork = await prisma.artWork.create({ data });
+    const newArtwork = await prisma.artwork.create({ data });
 
     return NextResponse.json(newArtwork, { status: 201 });
   } catch (error) {
@@ -70,7 +70,7 @@ export async function DELETE(request: NextRequest) {
       return NextResponse.json({ error: "Artwork ID is required" }, { status: 400 });
     }
 
-    const deletedArtwork = await prisma.artWork.delete({
+    const deletedArtwork = await prisma.artwork.delete({
       where: { id },
     });
 
@@ -95,7 +95,7 @@ export async function PUT(request: NextRequest) {
     }
 
     const { id, artType, ...rest } = validation.data;
-    const updatedArtwork = await prisma.artWork.update({
+    const updatedArtwork = await prisma.artwork.update({
       where: { id },
       data: {
         ...rest,

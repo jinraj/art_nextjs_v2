@@ -5,7 +5,6 @@ import { Table, TableHead, TableHeader, TableRow, TableBody, TableCell } from "@
 import { format } from "date-fns";
 import { ArrowUp, ArrowDown } from "lucide-react";
 import { OrderStatus } from "@/app/models/artwork";
-import { mockOrders } from "@/app/data/mockData";
 
 
 // ---------- Sort helper ----------
@@ -28,7 +27,7 @@ const sortOrders = (orders: any[], key: string, direction: "asc" | "desc") => {
 };
 
 // ---------- Component ----------
-export default function AllOrders() {
+export default function AllOrders({orders}) {
     const [sortConfig, setSortConfig] = useState<{ key: string; direction: "asc" | "desc" }>({
         key: "orderedAt",
         direction: "desc",
@@ -42,7 +41,7 @@ export default function AllOrders() {
         );
     };
 
-    const sortedOrders = sortOrders(mockOrders, sortConfig.key, sortConfig.direction);
+    const sortedOrders = sortOrders(orders || [], sortConfig.key, sortConfig.direction);
 
     const renderSortIcon = (key: string) => {
         if (sortConfig.key !== key) return null;
@@ -55,35 +54,54 @@ export default function AllOrders() {
                 <TableHeader>
                     <TableRow>
                         <TableHead onClick={() => handleSort("id")} className="cursor-pointer">
-                            Order ID {renderSortIcon("id")}
+                            <div className="flex items-center gap-1">
+                                Order ID {renderSortIcon("id")}
+                            </div>
                         </TableHead>
+
                         <TableHead onClick={() => handleSort("userId")} className="cursor-pointer">
-                            Ordered By {renderSortIcon("userId")}
+                            <div className="flex items-center gap-1">
+                                Ordered By {renderSortIcon("userId")}
+                            </div>
                         </TableHead>
+
                         <TableHead>Artworks - Price x Quantities</TableHead>
+
                         <TableHead onClick={() => handleSort("totalAmount")} className="cursor-pointer">
-                            Total Amount {renderSortIcon("totalAmount")}
+                            <div className="flex items-center gap-1">
+                                Total Amount {renderSortIcon("totalAmount")}
+                            </div>
                         </TableHead>
+
                         <TableHead onClick={() => handleSort("status")} className="cursor-pointer">
-                            Status {renderSortIcon("status")}
+                            <div className="flex items-center gap-1">
+                                Status {renderSortIcon("status")}
+                            </div>
                         </TableHead>
+
                         <TableHead onClick={() => handleSort("orderedAt")} className="cursor-pointer">
-                            Ordered At {renderSortIcon("orderedAt")}
+                            <div className="flex items-center gap-1">
+                                Ordered At {renderSortIcon("orderedAt")}
+                            </div>
                         </TableHead>
+
                         <TableHead onClick={() => handleSort("updatedAt")} className="cursor-pointer">
-                            Updated At {renderSortIcon("updatedAt")}
+                            <div className="flex items-center gap-1">
+                                Updated At {renderSortIcon("updatedAt")}
+                            </div>
                         </TableHead>
                     </TableRow>
                 </TableHeader>
+
 
                 <TableBody>
                     {sortedOrders.map(order => (
                         <TableRow
                             key={order.id}
-                            className="transition-transform duration-300 hover:scale-[1.01] hover:bg-custom-antiflash-white"
+                            className="transition-transform duration-300 hover:bg-gray-100 text-custom-paynes-gray"
                         >
-                            <TableCell className="font-medium text-custom-paynes-gray">{order.id}</TableCell>
-                            <TableCell className="text-custom-paynes-gray">{order.userId}</TableCell>
+                            <TableCell>{order.id}</TableCell>
+                            <TableCell>{order.userId}</TableCell>
 
                             <TableCell>
                                 <div className="flex flex-col gap-1">
@@ -98,12 +116,9 @@ export default function AllOrders() {
                                 </div>
                             </TableCell>
 
-
-
-
                             {/* Total Amount */}
-                            <TableCell className="text-custom-paynes-gray">
-                                ${order.totalAmount.toFixed(2)}
+                            <TableCell>
+                                INR.{order.totalAmount.toFixed(2)}
                             </TableCell>
 
                             {/* Status */}
@@ -128,13 +143,13 @@ export default function AllOrders() {
                             </TableCell>
 
                             {/* Ordered Date */}
-                            <TableCell className="text-custom-silver">
-                                {format(order.orderedAt, "PPP")}
+                            <TableCell>
+                                {new Date(order.orderedAt).toLocaleString()}
                             </TableCell>
 
                             {/* Updated Date */}
-                            <TableCell className="text-custom-silver">
-                                {format(order.updatedAt, "PPP")}
+                            <TableCell>
+                                {new Date(order.updatedAt).toLocaleString()}
                             </TableCell>
                         </TableRow>
                     ))}

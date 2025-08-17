@@ -19,7 +19,7 @@ export interface Order {
   updatedAt: Date;
 }
 
-export interface ArtWork {
+export interface Artwork {
   id: string;
   artType: 'Paintings' | 'Photography' | 'Decors' | 'Artifacts';
   title: string;

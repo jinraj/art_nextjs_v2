@@ -89,7 +89,7 @@ export default function AllUsers({ allUsers }) {
             {sortedUsers.map((user) => (
               <TableRow
                 key={user.id}
-                className="transition-transform text-custom-paynes-gray duration-300 hover:scale-[1.01] hover:bg-custom-antiflash-white"
+                className="duration-300 hover:bg-gray-100 text-custom-paynes-gray"
               >
                 <TableCell>{user.id}</TableCell>
                 <TableCell>{user.name}</TableCell>

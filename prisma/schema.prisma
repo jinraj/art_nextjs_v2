@@ -8,10 +8,10 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model ArtWork {
+model Artwork {
   id          String   @id @default(auto()) @map("_id") @db.ObjectId
   artType     ArtType
-  title       String   @unique
+  title       String
   description String
   images      String[]
   dimensions  String
@@ -24,8 +24,8 @@ model ArtWork {
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 
-  orderItems OrderItem[] // 👈 relation back
-  carts      Cart[] // 👈 relation back
+  orderItems OrderItem[] // relation back
+  carts      Cart[] // relation back
 }
 
 enum ArtType {
@@ -43,7 +43,7 @@ model Cart {
   cartedAt   DateTime   @default(now())
   status     CartStatus @default(Active)
 
-  artwork ArtWork @relation(fields: [artworkId], references: [id])
+  artwork Artwork @relation(fields: [artworkId], references: [id])
   user    User    @relation(fields: [cartedById], references: [id])
 }
 
@@ -67,9 +67,9 @@ model User {
   createdAt  DateTime  @default(now())
   updatedAt  DateTime  @updatedAt
 
-  orders  Order[] // 👈 relation back
-  carts   Cart[] // 👈 relation back
-  reviews AppReview? // 👈 one review per user
+  orders  Order[] // relation back
+  carts   Cart[] // relation back
+  reviews AppReview? // one review per user
 }
 
 enum Role {
@@ -100,7 +100,7 @@ model Order {
   updatedAt   DateTime    @updatedAt
 
   user  User        @relation(fields: [userId], references: [id])
-  items OrderItem[] // 👈 relation back
+  items OrderItem[] // relation back
 }
 
 model OrderItem {
@@ -111,7 +111,7 @@ model OrderItem {
   priceAtPurchase Float
 
   order   Order   @relation(fields: [orderId], references: [id])
-  artwork ArtWork @relation(fields: [artworkId], references: [id])
+  artwork Artwork @relation(fields: [artworkId], references: [id])
 }
 
 enum OrderStatus {

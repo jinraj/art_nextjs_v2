@@ -3,8 +3,7 @@ import { AppReview, ArtType, Artwork, Order, OrderStatus, Role, User } from "@pr
 export const mockArtworks = [
     // ------------------- PAINTINGS (20) -------------------
     {
-        id: 1,
-        artType: ArtType.Paintings,
+        artType: "Paintings",
         title: "Golden Horizon",
         description: "A warm-toned landscape that glows with late evening light. Subtle gradients guide the eye to a calm, radiant end of day.",
         images: [
@@ -19,8 +18,7 @@ export const mockArtworks = [
         isSold: false
     },
     {
-        id: 2,
-        artType: ArtType.Paintings,
+        artType: "Paintings",
         title: "Silent Meadow",
         description: "Soft strokes and muted tones evoke a meadow at rest. The composition invites a breath and a lingering pause.",
         images: [
@@ -35,8 +33,7 @@ export const mockArtworks = [
         isSold: false,
     },
     {
-        id: 3,
-        artType: ArtType.Paintings,
+        artType: "Paintings",
         title: "Ocean Whisper",
         description: "Fluid brushwork captures the hush of rolling tides. A gentle palette carries the calm of a distant shore.",
         images: [
@@ -51,8 +48,7 @@ export const mockArtworks = [
         isSold: false,
     },
     {
-        id: 4,
-        artType: ArtType.Paintings,
+        artType: "Paintings",
         title: "Ember Sky",
         description: "A blaze of color spreads across the canvas like evening embers. The layered glow hints at stories beneath the surface.",
         images: [
@@ -67,8 +63,7 @@ export const mockArtworks = [
         isSold: false,
     },
     {
-        id: 5,
-        artType: ArtType.Paintings,
+        artType: "Paintings",
         title: "Dream Path",
         description: "An abstract trail winds through color and light. It invites the viewer to wander and find quiet meaning.",
         images: [
@@ -83,8 +78,7 @@ export const mockArtworks = [
         isSold: false,
     },
     {
-        id: 6,
-        artType: ArtType.Paintings,
+        artType: "Paintings",
         title: "Eternal Flow",
         description: "Curving forms drift across a tranquil field of color. The motion feels steady, like breath or tide.",
         images: [
@@ -99,8 +93,7 @@ export const mockArtworks = [
         isSold: false,
     },
     {
-        id: 7,
-        artType: ArtType.Paintings,
+        artType: "Paintings",
         title: "Sacred Bloom",
         description: "Petals burst from a luminous heart, unfolding with grace. Light and shadow dance in quiet reverence.",
         images: [
@@ -115,8 +108,7 @@ export const mockArtworks = [
         isSold: false,
     },
     {
-        id: 8,
-        artType: ArtType.Paintings,
+        artType: "Paintings",
         title: "Nature’s Heart",
         description: "Vibrant hues converge into an organic rhythm. The piece hums with life, fresh as morning air.",
         images: [
@@ -131,8 +123,7 @@ export const mockArtworks = [
         isSold: false,
     },
     {
-        id: 9,
-        artType: ArtType.Paintings,
+        artType: "Paintings",
         title: "Rustic Path",
         description: "Earthy brushwork maps a road through memory. The scene feels worn-in, tender, and familiar.",
         images: [
@@ -147,8 +138,7 @@ export const mockArtworks = [
         isSold: false,
     },
     {
-        id: 10,
-        artType: ArtType.Paintings,
+        artType: "Paintings",
         title: "Urban Dawn",
         description: "A cool light rises over layered forms. The day begins with quiet resolve and subtle glow.",
         images: [
@@ -163,8 +153,7 @@ export const mockArtworks = [
         isSold: false,
     },
     {
-        id: 11,
-        artType: ArtType.Paintings,
+        artType: "Paintings",
         title: "Serenity",
         description: "Hushed color fields settle into calm balance. Edges blur like thoughts drifting into stillness.",
         images: [
@@ -179,8 +168,7 @@ export const mockArtworks = [
         isSold: false,
     },
     {
-        id: 12,
-        artType: ArtType.Paintings,
+        artType: "Paintings",
         title: "Harvest Gold",
         description: "Warm notes of ochre and wheat sway across the canvas. The ambience recalls long fields under soft sun.",
         images: [
@@ -195,8 +183,7 @@ export const mockArtworks = [
         isSold: false,
     },
     {
-        id: 13,
-        artType: ArtType.Paintings,
+        artType: "Paintings",
         title: "Cosmic Dance",
         description: "Celestial arcs and speckled lights spiral in motion. A sense of wonder hovers between order and play.",
         images: [
@@ -211,8 +198,7 @@ export const mockArtworks = [
         isSold: false,
     },
     {
-        id: 14,
-        artType: ArtType.Paintings,
+        artType: "Paintings",
         title: "Whispering Woods",
         description: "Shadows and greens fold into a quiet grove. The brushwork suggests leaves murmuring in breeze.",
         images: [
@@ -227,8 +213,7 @@ export const mockArtworks = [
         isSold: false,
     },
     {
-        id: 15,
-        artType: ArtType.Paintings,
+        artType: "Paintings",
         title: "River Hymn",
         description: "A ribbon of blue threads through gentle light. The cadence is calm, like a song remembered.",
         images: [
@@ -243,8 +228,7 @@ export const mockArtworks = [
         isSold: false,
     },
     {
-        id: 16,
-        artType: ArtType.Paintings,
+        artType: "Paintings",
         title: "Luminous Sky",
         description: "Streaks of brightness lift the horizon upward. A subtle radiance spreads warmth across the scene.",
         images: [
@@ -259,8 +243,7 @@ export const mockArtworks = [
         isSold: false,
     },
     {
-        id: 17,
-        artType: ArtType.Paintings,
+        artType: "Paintings",
         title: "Quiet Harmony",
         description: "Balanced shapes settle into a steady rhythm. Nothing shouts, yet everything feels present.",
         images: [
@@ -275,8 +258,7 @@ export const mockArtworks = [
         isSold: false,
     },
     {
-        id: 18,
-        artType: ArtType.Paintings,
+        artType: "Paintings",
         title: "Mystic Forest",
         description: "Veils of green and soft light suggest hidden paths. The atmosphere is hushed, alive, and inviting.",
         images: [
@@ -291,8 +273,7 @@ export const mockArtworks = [
         isSold: false,
     },
     {
-        id: 19,
-        artType: ArtType.Paintings,
+        artType: "Paintings",
         title: "Radiant Field",
         description: "Sunlit textures ripple across open ground. The painting glows with a gentle, patient warmth.",
         images: [
@@ -307,8 +288,7 @@ export const mockArtworks = [
         isSold: false,
     },
     {
-        id: 20,
-        artType: ArtType.Paintings,
+        artType: "Paintings",
         title: "Echoes",
         description: "Minimal marks pulse like distant sound waves. Negative space lets the quiet speak clearly.",
         images: [
@@ -324,8 +304,7 @@ export const mockArtworks = [
     },
 
     {
-        id: 21,
-        artType: ArtType.Decors,
+        artType: "Decors",
         title: 'Rustic Glow',
         description: 'A handcrafted decor piece that radiates rustic warmth. Perfect for adding character to living spaces and cozy corners.',
         images: [
@@ -340,8 +319,7 @@ export const mockArtworks = [
         isSold: false,
     },
     {
-        id: 22,
-        artType: ArtType.Decors,
+        artType: "Decors",
         title: 'Ceramic Charm',
         description: 'An elegant ceramic decor designed with intricate detailing. Brings sophistication and timeless beauty to your interiors.',
         images: [
@@ -356,8 +334,7 @@ export const mockArtworks = [
         isSold: false,
     },
     {
-        id: 23,
-        artType: ArtType.Decors,
+        artType: "Decors",
         title: 'Metallic Whisper',
         description: 'A sleek metal decor piece with a modern edge. Its reflective surface and abstract design make it a conversation starter.',
         images: [
@@ -372,8 +349,7 @@ export const mockArtworks = [
         isSold: false,
     },
     {
-        id: 24,
-        artType: ArtType.Decors,
+        artType: "Decors",
         title: 'Stone Serenity',
         description: 'Carved with precision, this stone-inspired decor adds calmness to any room. Ideal for minimalistic and earthy interiors.',
         images: [
@@ -388,8 +364,7 @@ export const mockArtworks = [
         isSold: false,
     },
     {
-        id: 25,
-        artType: ArtType.Decors,
+        artType: "Decors",
         title: 'Golden Curve',
         description: 'A decor piece with smooth golden curves that shine in natural light. Perfect for hallways and entrance spaces.',
         images: [
@@ -404,8 +379,7 @@ export const mockArtworks = [
         isSold: false,
     },
     {
-        id: 26,
-        artType: ArtType.Decors,
+        artType: "Decors",
         title: 'Woodland Echo',
         description: 'A handcrafted wooden decor reflecting nature’s charm. Its rustic design is perfect for earthy and traditional homes.',
         images: [
@@ -420,8 +394,7 @@ export const mockArtworks = [
         isSold: false,
     },
     {
-        id: 27,
-        artType: ArtType.Decors,
+        artType: "Decors",
         title: 'Glass Mirage',
         description: 'A delicate glasswork decor that reflects light beautifully. Adds elegance and sparkle to modern interiors.',
         images: [
@@ -436,8 +409,7 @@ export const mockArtworks = [
         isSold: false,
     },
     {
-        id: 28,
-        artType: ArtType.Decors,
+        artType: "Decors",
         title: 'Ceramic Bliss',
         description: 'An artistic ceramic piece crafted with care. Its smooth surface and unique form make it an elegant decor statement.',
         images: [
@@ -452,8 +424,7 @@ export const mockArtworks = [
         isSold: false,
     },
     {
-        id: 29,
-        artType: ArtType.Decors,
+        artType: "Decors",
         title: 'Eternal Bond',
         description: 'Symbolic decor piece that represents unity and connection. Perfect for couples and family-centered spaces.',
         images: [
@@ -468,8 +439,7 @@ export const mockArtworks = [
         isSold: false,
     },
     {
-        id: 30,
-        artType: ArtType.Decors,
+        artType: "Decors",
         title: 'Mystic Flow',
         description: 'A modern decor piece with abstract flowy lines. Creates a feeling of movement and energy within your interiors.',
         images: [
@@ -484,8 +454,7 @@ export const mockArtworks = [
         isSold: false,
     },
     {
-        id: 31,
-        artType: ArtType.Decors,
+        artType: "Decors",
         title: 'Silent Grace',
         description: 'Minimal yet captivating decor made with fine material. Designed to add grace to shelves, mantels, and side tables.',
         images: [
@@ -500,8 +469,7 @@ export const mockArtworks = [
         isSold: false,
     },
     {
-        id: 32,
-        artType: ArtType.Photography,
+        artType: "Photography",
         title: "Silent Shadows",
         description: "A play of light and shadow that captures the essence of calm in stillness. Subtle contrasts reveal unseen beauty.",
         images: [
@@ -516,8 +484,7 @@ export const mockArtworks = [
         isSold: false
     },
     {
-        id: 33,
-        artType: ArtType.Photography,
+        artType: "Photography",
         title: "Golden Fields",
         description: "Rolling fields glowing under a soft golden sun. A timeless capture of nature’s abundance and serenity.",
         images: [
@@ -532,8 +499,7 @@ export const mockArtworks = [
         isSold: false
     },
     {
-        id: 34,
-        artType: ArtType.Photography,
+        artType: "Photography",
         title: "Ocean Mist",
         description: "Waves crash with energy as the ocean mist rises, painting the scene in ethereal beauty and strength.",
         images: [
@@ -548,8 +514,7 @@ export const mockArtworks = [
         isSold: false
     },
     {
-        id: 35,
-        artType: ArtType.Photography,
+        artType: "Photography",
         title: "Quiet Reflections",
         description: "A tranquil water surface mirrors the still world around it, blending silence and depth in one frame.",
         images: [
@@ -564,8 +529,7 @@ export const mockArtworks = [
         isSold: false
     },
     {
-        id: 36,
-        artType: ArtType.Photography,
+        artType: "Photography",
         title: "Urban Flow",
         description: "A dynamic cityscape alive with motion and rhythm. Lights, buildings, and people blend into urban poetry.",
         images: [
@@ -580,8 +544,7 @@ export const mockArtworks = [
         isSold: false
     },
     {
-        id: 37,
-        artType: ArtType.Photography,
+        artType: "Photography",
         title: "Rustic Path",
         description: "A forgotten path lined with nature’s embrace, evoking nostalgia and stories untold.",
         images: [
@@ -596,8 +559,7 @@ export const mockArtworks = [
         isSold: false
     },
     {
-        id: 38,
-        artType: ArtType.Photography,
+        artType: "Photography",
         title: "Still Waters",
         description: "The beauty of a lake at dawn, untouched by movement, reflects a sense of inner calm.",
         images: [
@@ -612,8 +574,7 @@ export const mockArtworks = [
         isSold: false
     },
     {
-        id: 39,
-        artType: ArtType.Photography,
+        artType: "Photography",
         title: "Desert Glow",
         description: "Golden sands bathed in evening light create an otherworldly glow that feels timeless and infinite.",
         images: [
@@ -628,8 +589,7 @@ export const mockArtworks = [
         isSold: false
     },
     {
-        id: 40,
-        artType: ArtType.Photography,
+        artType: "Photography",
         title: "Broken Silence",
         description: "An abandoned place where silence speaks louder than words. Cracks and textures tell forgotten tales.",
         images: [
@@ -644,8 +604,7 @@ export const mockArtworks = [
         isSold: false
     },
     {
-        id: 41,
-        artType: ArtType.Photography,
+        artType: "Photography",
         title: "Mountain Veil",
         description: "Mist rolls gently over peaks, softening their strength with a delicate veil of nature’s artistry.",
         images: [
@@ -660,8 +619,7 @@ export const mockArtworks = [
         isSold: false
     },
     {
-        id: 42,
-        artType: ArtType.Photography,
+        artType: "Photography",
         title: "Golden Hour",
         description: "The warmth of sunset spreads across the frame, bathing the world in glowing amber light.",
         images: [
@@ -676,8 +634,7 @@ export const mockArtworks = [
         isSold: false
     },
     {
-        id: 43,
-        artType: ArtType.Photography,
+        artType: "Photography",
         title: "Old Streets",
         description: "A timeless alleyway frozen in memory. Every stone whispers stories of the people who passed through.",
         images: [
@@ -692,8 +649,7 @@ export const mockArtworks = [
         isSold: false
     },
     {
-        id: 44,
-        artType: ArtType.Photography,
+        artType: "Photography",
         title: "Light Trails",
         description: "A dance of lights across the night sky as motion and stillness collide in vivid color.",
         images: [
@@ -708,8 +664,7 @@ export const mockArtworks = [
         isSold: false
     },
     {
-        id: 45,
-        artType: ArtType.Photography,
+        artType: "Photography",
         title: "Rustic Home",
         description: "A cozy frame of an old home, capturing warmth and nostalgia in familiar textures and colors.",
         images: [
@@ -724,8 +679,7 @@ export const mockArtworks = [
         isSold: false
     },
     {
-        id: 46,
-        artType: ArtType.Photography,
+        artType: "Photography",
         title: "Evening Glow",
         description: "Soft twilight colors wash over rooftops, creating a dreamy calmness at the end of the day.",
         images: [
@@ -740,8 +694,7 @@ export const mockArtworks = [
         isSold: false
     },
     {
-        id: 47,
-        artType: ArtType.Photography,
+        artType: "Photography",
         title: "Street Rhythm",
         description: "Everyday moments framed in perfect rhythm. A story of people, time, and place intertwined.",
         images: [
@@ -756,8 +709,7 @@ export const mockArtworks = [
         isSold: false
     },
     {
-        id: 48,
-        artType: ArtType.Photography,
+        artType: "Photography",
         title: "Morning Steps",
         description: "Sunlight peeks through buildings as footsteps echo in narrow streets, welcoming a new day.",
         images: [
@@ -772,8 +724,7 @@ export const mockArtworks = [
         isSold: false
     },
     {
-        id: 49,
-        artType: ArtType.Photography,
+        artType: "Photography",
         title: "Hidden Corners",
         description: "A quiet frame tucked away from the world, where forgotten corners breathe new stories.",
         images: [
@@ -788,8 +739,7 @@ export const mockArtworks = [
         isSold: false
     },
     {
-        id: 50,
-        artType: ArtType.Photography,
+        artType: "Photography",
         title: "Crossroads",
         description: "A symbolic frame where paths meet, reflecting choices and journeys yet to unfold.",
         images: [
@@ -804,8 +754,7 @@ export const mockArtworks = [
         isSold: false
     },
     {
-        id: 51,
-        artType: ArtType.Photography,
+        artType: "Photography",
         title: "City Lights",
         description: "The city glows at night, alive with energy and stories in every corner of light and shadow.",
         images: [
@@ -820,8 +769,7 @@ export const mockArtworks = [
         isSold: false
     },
     {
-        id: 52,
-        artType: ArtType.Photography,
+        artType: "Photography",
         title: "Evening Walk",
         description: "Streets light up as footsteps blend with twilight, weaving together a gentle urban rhythm.",
         images: [
@@ -836,8 +784,7 @@ export const mockArtworks = [
         isSold: false
     },
     {
-        id: 53,
-        artType: ArtType.Photography,
+        artType: "Photography",
         title: "Sky Hues",
         description: "Shifting colors of dusk paint the sky in hues that inspire both calm and wonder.",
         images: [
@@ -852,8 +799,7 @@ export const mockArtworks = [
         isSold: false
     },
     {
-        id: 54,
-        artType: ArtType.Photography,
+        artType: "Photography",
         title: "Quiet Alley",
         description: "An alleyway caught in silence, where light meets shadow in simple harmony.",
         images: [
@@ -868,8 +814,7 @@ export const mockArtworks = [
         isSold: false
     },
     {
-        id: 55,
-        artType: ArtType.Photography,
+        artType: "Photography",
         title: "Nature’s Frame",
         description: "Greenery wraps around the scene like a frame, highlighting the untouched core of nature.",
         images: [
@@ -884,8 +829,7 @@ export const mockArtworks = [
         isSold: false
     },
     {
-        id: 56,
-        artType: ArtType.Photography,
+        artType: "Photography",
         title: "Stone Steps",
         description: "Ancient stone steps leading upward, layered with time, patience, and untold stories.",
         images: [
@@ -900,8 +844,7 @@ export const mockArtworks = [
         isSold: false
     },
     {
-        id: 57,
-        artType: ArtType.Photography,
+        artType: "Photography",
         title: "Morning Calm",
         description: "The world awakes slowly as light pours into a landscape of stillness and peace.",
         images: [

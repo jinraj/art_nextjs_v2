@@ -4,7 +4,7 @@ import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { User2, ShoppingBag, Star, Palette, Users, Loader2 } from 'lucide-react';
-import { User, ArtWork, Order, AppReview, Role, OrderStatus } from '@/app/models/artwork';
+import { User, Artwork, Order, AppReview, Role, OrderStatus } from '@/app/models/artwork';
 import MyDetails from './MyDetails';
 import AllOrders from './AllOrders';
 import Reviews from './Reviews';
@@ -23,7 +23,7 @@ const AccountPage: React.FC = () => {
   const [currentUser, setCurrentUser] = useState<User | null>(null);
   const [activeSection, setActiveSection] = useState<'details' | 'orders' | 'reviews' | 'artworks' | 'users'>('details');
   const [orders, setOrders] = useState<Order[] | null>(null);
-  const [artworks, setArtworks] = useState<ArtWork[] | null>(null);
+  const [artworks, setArtworks] = useState<Artwork[] | null>(null);
   const [reviews, setReviews] = useState<AppReview[] | null>(null);
   const [allUsers, setAllUsers] = useState<User[] | null>(null);
   const [isLoading, setIsLoading] = useState(false);
@@ -53,7 +53,7 @@ const AccountPage: React.FC = () => {
           break;
         case 'artworks':
           const fetchedArtworks = mockArtworks; // await mockFetch(mockArtworks);
-          setArtworks(fetchedArtworks as ArtWork[]);
+          setArtworks(fetchedArtworks as Artwork[]);
           break;
         case 'reviews':
           const fetchedReviews = await mockFetch(mockReviews);
@@ -156,7 +156,7 @@ const AccountPage: React.FC = () => {
               // Render content based on active section
               <>
                 {activeSection === 'details' && (<MyDetails currentUser={currentUser} />)}
-                {activeSection === 'orders' && (<AllOrders displayOrders={displayOrders} />)}
+                {activeSection === 'orders' && (<AllOrders orders={orders} />)}
                 {activeSection === 'reviews' && (<Reviews reviews={reviews} />)}
                 {activeSection === 'artworks' && (<AllArtworks displayArtworks={displayArtworks} currentUser={currentUser} />)}
                 {activeSection === 'users' && currentUser.role === Role.Admin && (<AllUsers allUsers={allUsers} />)}

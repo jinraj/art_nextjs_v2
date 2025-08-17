@@ -1,7 +1,7 @@
 
 import { ArtType } from "@prisma/client";
 
-import { User, ArtWork, Order, AppReview, Role, OrderStatus } from '@/app/models/artwork';
+import { User, Artwork, Order, AppReview, Role, OrderStatus } from '@/app/models/artwork';
 
 export const testimonials = [
     { message: "The painting I bought exceeded all my expectations. It adds so much life and color to my home. The artist's talent is truly remarkable!", name: "Jane D.", title: "Art Collector" },

@@ -11,13 +11,6 @@ const registerSchema = z.object({
   name: z.string().min(2, "Name must be at least 2 characters"),
   email: z.email("Invalid email address"),
   password: z.string().min(6, "Password must be at least 6 characters"),
-  dob: z.string().nonempty("Date of Birth is required"),
-  mobile: z
-    .string()
-    .regex(
-      /^\+\d{1,3}\s?\d{7,14}$/,
-      "Enter a valid mobile number with country code"
-    ),
   city: z.string().min(2, "City is required"),
   state: z.string().min(2, "State is required"),
   country: z.string().min(2, "Country is required"),
@@ -53,7 +46,7 @@ export default function Signup() {
         <form onSubmit={handleSubmit(onSubmit)} className="mt-6 space-y-4">
           {/* Name */}
           <InputField
-            icon={<User />}
+            icon={<User className="text-custom-silver" />}
             placeholder="Full Name"
             {...register("name")}
             error={errors.name?.message}
@@ -61,7 +54,7 @@ export default function Signup() {
 
           {/* Email */}
           <InputField
-            icon={<Mail />}
+            icon={<Mail className="text-custom-silver" />}
             placeholder="Email"
             type="email"
             {...register("email")}
@@ -70,32 +63,16 @@ export default function Signup() {
 
           {/* Password */}
           <InputField
-            icon={<Lock />}
+            icon={<Lock className="text-custom-silver" />}
             placeholder="Password"
             type="password"
             {...register("password")}
             error={errors.password?.message}
           />
 
-          {/* DOB */}
-          <InputField
-            icon={<Calendar />}
-            type="date"
-            {...register("dob")}
-            error={errors.dob?.message}
-          />
-
-          {/* Mobile */}
-          <InputField
-            icon={<Phone />}
-            placeholder="+91 9876543210"
-            {...register("mobile")}
-            error={errors.mobile?.message}
-          />
-
           {/* City */}
           <InputField
-            icon={<MapPin />}
+            icon={<MapPin className="text-custom-silver" />}
             placeholder="City"
             {...register("city")}
             error={errors.city?.message}
@@ -103,7 +80,7 @@ export default function Signup() {
 
           {/* State */}
           <InputField
-            icon={<MapPin />}
+            icon={<MapPin className="text-custom-silver" />}
             placeholder="State"
             {...register("state")}
             error={errors.state?.message}
@@ -111,7 +88,7 @@ export default function Signup() {
 
           {/* Country */}
           <InputField
-            icon={<MapPin />}
+            icon={<MapPin className="text-custom-silver" />}
             placeholder="Country"
             {...register("country")}
             error={errors.country?.message}

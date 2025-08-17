@@ -7,6 +7,7 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import InputField from "../../components/InputField"; // ✅ Reuse InputField
+import { useRouter } from "next/navigation";
 
 // ✅ Zod schemas
 const loginSchema = z.object({
@@ -22,6 +23,7 @@ type LoginFormInputs = z.infer<typeof loginSchema>;
 type ForgotFormInputs = z.infer<typeof forgotSchema>;
 
 export default function LoginPage() {
+  const router = useRouter();
   const [loading, setLoading] = useState(false);
   const [forgotMode, setForgotMode] = useState(false);
 
@@ -46,12 +48,18 @@ export default function LoginPage() {
   // ✅ Login handler
   const onLogin = async (data: LoginFormInputs) => {
     setLoading(true);
-    await signIn("credentials", {
+    const result = await signIn("domain-login", {
+      redirect: false,
       email: data.email,
-      password: data.password,
-      callbackUrl: "/paintings", // redirect after login
-    });
+      password: data.password
+    })
     setLoading(false);
+    if (result?.ok) {
+      router.push("/account/home");
+    } else {
+      console.error(result?.error);
+    }
+
   };
 
   // ✅ Forgot handler
@@ -84,7 +92,7 @@ export default function LoginPage() {
             <InputField
               type="email"
               placeholder="Email"
-              icon={<Mail />}
+              icon={<Mail className="text-custom-silver" />}
               {...loginRegister("email")}
               error={loginErrors.email?.message}
             />
@@ -92,7 +100,7 @@ export default function LoginPage() {
             <InputField
               type="password"
               placeholder="Password"
-              icon={<Lock />}
+              icon={<Lock className="text-custom-silver" />}
               {...loginRegister("password")}
               error={loginErrors.password?.message}
             />
@@ -116,7 +124,7 @@ export default function LoginPage() {
             <InputField
               type="email"
               placeholder="Email"
-              icon={<Mail />}
+              icon={<Mail className="text-custom-silver" />}
               {...forgotRegister("email")}
               error={forgotErrors.email?.message}
             />

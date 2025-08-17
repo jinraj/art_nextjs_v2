@@ -2,12 +2,13 @@
 
 import React, { useEffect, useState } from 'react';
 import TitleLayout from '../components/TitleLayout';
-import { artType, mockArtworks } from '../data/mockData';
-import { ArtWork } from '../models/artwork';
+import { mockArtworks } from '../data/mockData';
+import { Artwork } from '../models/artwork';
 import ImageCard from '../components/ImageCard';
+import { artType } from '../data/app';
 
 const Paintings = () => {
-  const [paintings, setPaintings] = useState<ArtWork[]>([]);
+  const [paintings, setPaintings] = useState<Artwork[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [randomQuote, setRandomQuote] = useState<string | null>(null);
@@ -36,8 +37,8 @@ const Paintings = () => {
         }
 
         const data = await res.json();
-        // const artworks: ArtWork[] = Array.isArray(data) ? data : data?.artworks || [];
-        const artworks: ArtWork[] = mockArtworks;
+        // const artworks: Artwork[] = Array.isArray(data) ? data : data?.artworks || [];
+        const artworks: Artwork[] = mockArtworks;
 
         const filtered = artworks.filter(item => item.artType === artType.Paintings.name);
         console.log("paintings", paintings);

@@ -89,15 +89,15 @@ export default function AllArtworks({ displayArtworks, currentUser }) {
             {sortedArtworks.map((artwork) => (
               <TableRow
                 key={artwork.id}
-                className="transition-transform duration-300 hover:scale-[1.01] hover:bg-custom-antiflash-white"
+                className="transition-transform duration-300 hover:bg-gray-100 text-custom-paynes-gray"
               >
-                <TableCell className="font-medium text-custom-paynes-gray">{artwork.id}</TableCell>
-                <TableCell className="text-custom-paynes-gray">{artwork.artType}</TableCell>
-                <TableCell className="text-custom-paynes-gray">{artwork.title}</TableCell>
-                <TableCell className="text-custom-paynes-gray whitespace-normal min-w-xs break-words">
+                <TableCell className="font-medium">{artwork.id}</TableCell>
+                <TableCell>{artwork.artType}</TableCell>
+                <TableCell>{artwork.title}</TableCell>
+                <TableCell className="whitespace-normal min-w-xs break-words">
                   {artwork.description}
                 </TableCell>
-                <TableCell className="text-custom-paynes-gray min-w-[120px]">
+                <TableCell className=" min-w-[120px]">
                   <div className="flex flex-col space-y-2">
                     {artwork.images?.map((img, idx) => {
                       const filename = img.split('/').pop(); // Extract filename only
@@ -115,12 +115,12 @@ export default function AllArtworks({ displayArtworks, currentUser }) {
                     })}
                   </div>
                 </TableCell>
-                <TableCell className="text-custom-paynes-gray">{artwork.dimensions}</TableCell>
-                <TableCell className="text-custom-paynes-gray">{artwork.medium}</TableCell>
-                <TableCell className="text-custom-paynes-gray">${artwork.price.toFixed(2)}</TableCell>
-                <TableCell className="text-custom-paynes-gray">{artwork.artistName}</TableCell>
-                <TableCell className="text-custom-paynes-gray">{artwork.likes}</TableCell>
-                <TableCell className="text-custom-paynes-gray">{artwork.isHidden ? "Yes" : "No"}</TableCell>
+                <TableCell>{artwork.dimensions}</TableCell>
+                <TableCell>{artwork.medium}</TableCell>
+                <TableCell>${artwork.price.toFixed(2)}</TableCell>
+                <TableCell>{artwork.artistName}</TableCell>
+                <TableCell>{artwork.likes}</TableCell>
+                <TableCell>{artwork.isHidden ? "Yes" : "No"}</TableCell>
                 <TableCell>
                   <div className="flex items-center space-x-2">
                     {artwork.isSold ? (
@@ -134,14 +134,14 @@ export default function AllArtworks({ displayArtworks, currentUser }) {
                     )}
                   </div>
                 </TableCell>
-                <TableCell className="text-custom-paynes-gray">
+                <TableCell>
                   {new Date(artwork.createdAt).toLocaleDateString()}
                 </TableCell>
-                <TableCell className="text-custom-paynes-gray">
+                <TableCell>
                   {new Date(artwork.updatedAt).toLocaleDateString()}
                 </TableCell>
                 {currentUser?.role === Role.Admin && (
-                  <TableCell className="text-custom-paynes-gray">{artwork.artistName}</TableCell>
+                  <TableCell>{artwork.artistName}</TableCell>
                 )}
 
                 {/* Actions */}
