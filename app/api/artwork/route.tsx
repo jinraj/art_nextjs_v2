@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { prisma } from "../../prisma/client";
+import { prisma } from "../../../prisma/client";
 import { createArtworkSchema, updateArtworkSchema } from "./schemaValidator";
 import path from "path";
 import { existsSync, mkdirSync } from "fs";
@@ -36,7 +36,7 @@ export async function POST(request: NextRequest) {
       artType: artType,
       title: formData.get('title') as string,
       description: formData.get('description') as string,
-      dimension: formData.get('dimension') as string,
+      dimensions: formData.get('dimensions') as string,
       medium: formData.get('medium') as string,
       price: parseFloat(formData.get('price') as string),
       artistName: formData.get('artistName') as string,

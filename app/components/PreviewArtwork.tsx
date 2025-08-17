@@ -77,7 +77,7 @@ export const PreviewArtwork = ({ artwork, onClose }) => {
                         <div className="grid grid-cols-2 gap-4 text-sm border border-gray-200 rounded-xl p-3">
                             <div>
                                 <span className="text-gray-500">Dimensions</span>
-                                <p className="text-gray-800 font-medium">{artwork.dimension}</p>
+                                <p className="text-gray-800 font-medium">{artwork.dimensions}</p>
                             </div>
                             <div>
                                 <span className="text-gray-500">Medium</span>

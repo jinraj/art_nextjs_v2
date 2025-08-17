@@ -41,3 +41,49 @@ export async function authenticateAdminRequest(request: NextRequest) {
   // If authenticated and authorized, return the session
   return session;
 } 
+
+export async function authenticateArtistRequest(request: NextRequest) {
+  console.log("Authenticating artist request...");
+  const session = await getServerSession(authOptions);
+  // Log the session for debugging
+  console.log('API Route Session:', session);
+
+  // Check if a session exists
+  if (!session) {
+    console.log('Unauthorized access: No session found.');
+    return NextResponse.json({ message: 'Unauthorized' }, { status: 401 });
+  }
+
+  // Optional: Add role-based authorization check here
+  // For example, if only 'artist' users should access these APIs
+  if (session.user && session.user.id !== 'artist') {
+    console.log('Forbidden access: User is not an artist.');
+    return NextResponse.json({ message: 'Forbidden' }, { status: 403 });
+  }
+
+  // If authenticated and authorized, return the session
+  return session;
+} 
+
+export async function authenticateCustomerRequest(request: NextRequest) {
+  console.log("Authenticating customer request...");
+  const session = await getServerSession(authOptions);
+  // Log the session for debugging
+  console.log('API Route Session:', session);
+
+  // Check if a session exists
+  if (!session) {
+    console.log('Unauthorized access: No session found.');
+    return NextResponse.json({ message: 'Unauthorized' }, { status: 401 });
+  }
+
+  // Optional: Add role-based authorization check here
+  // For example, if only 'customer' users should access these APIs
+  if (session.user && session.user.id !== 'customer') {
+    console.log('Forbidden access: User is not an customer.');
+    return NextResponse.json({ message: 'Forbidden' }, { status: 403 });
+  }
+
+  // If authenticated and authorized, return the session
+  return session;
+} 

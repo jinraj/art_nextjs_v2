@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from 'react';
 import TitleLayout from '../components/TitleLayout';
-import { artType, artworksSeed } from '../data/app';
+import { artType, artworksSyntheticData } from '../data/app';
 import { ArtWork } from '../models/artwork';
 import ImageCard from '../components/ImageCard';
 
@@ -37,7 +37,7 @@ const Decors = () => {
 
         const data = await res.json();
         // const artworks: ArtWork[] = Array.isArray(data) ? data : data?.artworks || [];
-        const artworks: ArtWork[] = artworksSeed;
+        const artworks: ArtWork[] = artworksSyntheticData;
 
         const filtered = artworks.filter(item => item.artType === artType.Decors.name);
         console.log("decors", decors);

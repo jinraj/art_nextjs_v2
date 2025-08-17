@@ -1,0 +1,97 @@
+generator client {
+  provider      = "prisma-client-js"
+  binaryTargets = ["native", "linux-musl-openssl-3.0.x"]
+}
+
+datasource db {
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
+}
+
+model ArtWork {
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  artType     ArtType
+  title       String   @unique
+  description String
+  images      String[]
+  dimensions  String
+  medium      String
+  price       Float
+  artistName  String   @default("Jinraj K R")
+  likes       Int      @default(0)
+  isHidden    Boolean  @default(false)
+  isSold      Boolean  @default(false)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+enum ArtType {
+  Paintings
+  Photography
+  Decors
+  Artifacts
+}
+
+model Cart {
+  id         String     @id @default(auto()) @map("_id") @db.ObjectId
+  artworkId  String
+  cartedById String
+  quantity   Int
+  cartedAt   DateTime   @default(now())
+  status     CartStatus @default(Active)
+}
+
+enum CartStatus {
+  Active
+  Ordered
+  Removed
+}
+
+model User {
+  id         String    @id @default(auto()) @map("_id") @db.ObjectId
+  name       String
+  email      String    @unique
+  password   String
+  role       Role
+  city       String
+  state      String
+  country    String
+  isApproved Boolean   @default(false) // New field
+  approvedAt DateTime?
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
+}
+
+enum Role {
+  Artist
+  Admin
+  Customer
+}
+
+model AppReview {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  userId    String
+  rating    Int // e.g., 1 to 5
+  comment   String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([userId]) // Each user can submit only one review
+}
+
+model Order {
+  id          String      @id @default(auto()) @map("_id") @db.ObjectId
+  orderedById String
+  artworkIds  String[] // list of artwork IDs purchased
+  quantities  Int[] // corresponding quantities
+  totalAmount Float
+  status      OrderStatus @default(Pending)
+  orderedAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+}
+
+enum OrderStatus {
+  Pending
+  Completed
+  Cancelled
+}

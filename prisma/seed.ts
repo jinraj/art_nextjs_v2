@@ -1,5 +1,5 @@
 import { PrismaClient } from '@prisma/client';
-import artworks from '../app/constants/artworksData';
+import { artworksSyntheticData } from '../app/data/app';
 
 const prisma = new PrismaClient();
 
@@ -21,11 +21,11 @@ async function main() {
 
   // Step 2: Insert new artworks
   try {
-    console.log(`Inserting ${artworks.length} artworks...`);
+    console.log(`Inserting ${artworksSyntheticData.length} artworks...`);
     await prisma.artWork.createMany({
-      data: artworks,
+      data: artworksSyntheticData,
     });
-    console.log(`Inserted ${artworks.length} new artworks.`);
+    console.log(`Inserted ${artworksSyntheticData.length} new artworks.`);
   } catch (error) {
     console.error('Error inserting new artworks:', error);
     throw error;
