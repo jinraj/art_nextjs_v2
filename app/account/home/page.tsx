@@ -10,7 +10,7 @@ import AllOrders from './AllOrders';
 import Reviews from './Reviews';
 import AllArtworks from './AllArtworks';
 import AllUsers from './AllUsers';
-import { mockUsers, mockArtworks, mockOrders, mockReviews } from '@/app/data/app';
+import { mockUsers, mockArtworks, mockOrders, mockReviews } from '@/app/data/mockData';
 
 
 // Helper function to mock API calls
@@ -52,7 +52,7 @@ const AccountPage: React.FC = () => {
           setOrders(sortedOrders);
           break;
         case 'artworks':
-          const fetchedArtworks = await mockFetch(mockArtworks);
+          const fetchedArtworks = mockArtworks; // await mockFetch(mockArtworks);
           setArtworks(fetchedArtworks as ArtWork[]);
           break;
         case 'reviews':

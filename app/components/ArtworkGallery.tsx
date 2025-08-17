@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import { artworksSyntheticData } from '../data/app';
+import { mockArtworks } from '../data/mockData';
 import { ScrollingColumn } from './ScrollingColumn';
 
 // Fisher-Yates shuffle
@@ -25,7 +25,7 @@ export default function ArtworkGallery() {
   const [chunkedArtworks, setChunkedArtworks] = React.useState<any[][]>([]);
 
   React.useEffect(() => {
-    const shuffled = shuffleArray([...artworksSyntheticData]);
+    const shuffled = shuffleArray([...mockArtworks]);
     const chunked = splitIntoGroups(shuffled, 5);
     console.log("chunkedArtworks", chunked)
     setChunkedArtworks(chunked);
