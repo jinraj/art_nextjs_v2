@@ -20,8 +20,8 @@ export default function AllArtworks({ displayArtworks, currentUser }) {
 
   // Sorted data
   const sortedArtworks = useMemo(() => {
+    console.log(" artworks by:",displayArtworks);
     if (!sortConfig) return displayArtworks;
-
     return [...displayArtworks].sort((a, b) => {
       const aValue = a[sortConfig.key];
       const bValue = b[sortConfig.key];

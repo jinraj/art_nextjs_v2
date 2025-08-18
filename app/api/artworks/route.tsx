@@ -25,7 +25,7 @@ export async function GET(request: NextRequest) {
     if (!artworks || artworks.length === 0) {
       return NextResponse.json({ message: "No artworks found" }, { status: 404 });
     }
-
+    console.log("Fetched artworks:", artworks.length);
     return NextResponse.json(artworks);
   } catch (error) {
     console.error("Error fetching artworks:", error);

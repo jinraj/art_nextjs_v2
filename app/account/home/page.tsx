@@ -56,8 +56,9 @@ const AccountPage: React.FC = () => {
             break;
 
           case 'artworks':
-            res = await fetch('/api/artworks');
+            res = await fetch('/api/artworks/byrole');
             data = await res.json();
+            console.log("Fetched artworks:", data);
             setArtworks(data as Artwork[]);
             break;
 
@@ -89,10 +90,6 @@ const AccountPage: React.FC = () => {
     fetchData();
   }, [activeSection, currentUser]);
 
-
-  // Handle conditional data filtering
-  const displayOrders = currentUser?.role === Role.Admin ? orders : orders?.filter(o => o.orderedById === currentUser?.id);
-  const displayArtworks = currentUser?.role === Role.Admin ? artworks : artworks?.filter(a => a.artistName === currentUser?.name);
 
   // Determine navigation items based on role
   const getMenuItems = () => {
@@ -127,11 +124,7 @@ const AccountPage: React.FC = () => {
 
   return (
     <div className="bg-custom-antiflash-white font-[Poppins] min-h-screen p-4 md:p-8 mt-20">
-      <style>
-        {`
-                @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap');
-                `}
-      </style>
+
       {/* Top Navigation Tabs/Chips */}
       <div className="w-full flex flex-wrap justify-center items-center gap-2 p-4 md:p-0 mb-6 bg-custom-white rounded-xl shadow-md">
         {getMenuItems().map(item => (
@@ -173,7 +166,7 @@ const AccountPage: React.FC = () => {
                 {activeSection === 'details' && (<MyDetails currentUser={currentUser} />)}
                 {activeSection === 'orders' && (<AllOrders orders={orders} />)}
                 {activeSection === 'reviews' && (<Reviews reviews={reviews} />)}
-                {activeSection === 'artworks' && (<AllArtworks displayArtworks={displayArtworks} currentUser={currentUser} />)}
+                {activeSection === 'artworks' && (<AllArtworks displayArtworks={artworks} currentUser={currentUser} />)}
                 {activeSection === 'users' && currentUser.role === Role.Admin && (<AllUsers allUsers={allUsers} />)}
               </>
             )}
