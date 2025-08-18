@@ -71,7 +71,7 @@ export const PreviewArtwork = ({ artwork, onClose }) => {
 
                         {/* Artwork Details */}
                         <h2 className="text-4xl font-bold text-custom-paynes-gray my-2">{artwork.title}</h2>
-                        <p className="text-sm text-gray-600 my-2">by {artwork.artistName}</p>
+                        <p className="text-sm text-gray-600 my-2">by {artwork.artist.name}</p>
                         <p className="text-sm my-5">{artwork.description}</p>
 
                         <div className="grid grid-cols-2 gap-4 text-sm border border-gray-200 rounded-xl p-3">

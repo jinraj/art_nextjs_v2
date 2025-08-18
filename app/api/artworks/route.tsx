@@ -11,10 +11,21 @@ export async function GET(request: NextRequest) {
   try {
     console.log("Fetching artworks...");
 
-    const artworks = await prisma.artwork.findMany();
+    const artworks = await prisma.artwork.findMany({
+      include: {
+        artist: { // relation field in Artwork model pointing to User
+          select: {
+            id: true,
+            name: true, // only fetch name
+          },
+        },
+      },
+    });
+
     if (!artworks || artworks.length === 0) {
       return NextResponse.json({ message: "No artworks found" }, { status: 404 });
     }
+
     return NextResponse.json(artworks);
   } catch (error) {
     console.error("Error fetching artworks:", error);

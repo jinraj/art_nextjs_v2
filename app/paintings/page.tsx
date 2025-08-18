@@ -2,7 +2,6 @@
 
 import React, { useEffect, useState } from 'react';
 import TitleLayout from '../components/TitleLayout';
-import { mockArtworks } from '../data/mockData';
 import { Artwork } from '../models/artwork';
 import ImageCard from '../components/ImageCard';
 import { artType } from '../data/app';
@@ -24,7 +23,7 @@ const Paintings = () => {
     const fetchArtworks = async () => {
       try {
         setLoading(true);
-        const res = await fetch('/api/artwork', {
+        const res = await fetch('/api/artworks', {
           method: 'GET',
           headers: {
             'Content-Type': 'application/json',
@@ -37,8 +36,7 @@ const Paintings = () => {
         }
 
         const data = await res.json();
-        // const artworks: Artwork[] = Array.isArray(data) ? data : data?.artworks || [];
-        const artworks: Artwork[] = mockArtworks;
+        const artworks: Artwork[] = Array.isArray(data) ? data : data?.artworks || [];
 
         const filtered = artworks.filter(item => item.artType === artType.Paintings.name);
         console.log("paintings", paintings);

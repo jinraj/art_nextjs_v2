@@ -1,6 +1,6 @@
 // prisma/seed.ts
 import { mockUsers } from '@/app/data/seedMockData';
-import { PrismaClient, Role } from '@prisma/client';
+import { PrismaClient } from '@prisma/client';
 import bcrypt from 'bcryptjs';
 
 const prisma = new PrismaClient();
@@ -12,11 +12,13 @@ async function hashPassword(password: string) {
   return Buffer.from(hashed).toString('base64');
 }
 
-async function main() {
+export async function deleteAllUsers() {
   // 1️⃣ Delete all existing users
   await prisma.user.deleteMany({});
   console.log('All users deleted.');
+}
 
+export async function seedUsers() {
   for (const user of mockUsers) {
     const hashedPassword = await hashPassword(user.password);
     await prisma.user.create({
@@ -28,12 +30,3 @@ async function main() {
     console.log(`User ${user.name} created.`);
   }
 }
-
-main()
-  .catch((e) => {
-    console.error(e);
-    process.exit(1);
-  })
-  .finally(async () => {
-    await prisma.$disconnect();
-  });

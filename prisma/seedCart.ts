@@ -1,46 +1,50 @@
-import { PrismaClient } from '@prisma/client';
-import { mockArtworks } from '../app/data/seedMockData';
+import { PrismaClient, CartStatus } from '@prisma/client';
 
 const prisma = new PrismaClient();
 
-async function main() {
-  console.log('Starting seed script...');
-
-  // Step 1: Delete all existing artworks
-  try {
-    console.log(`Deleting all the existing artworks...`);
-    const deleteResult = await prisma.artwork.deleteMany({});
-    console.log(`Deleted ${deleteResult.count} existing artworks.`);
-  } catch (error) {
-    console.error('Error deleting existing artworks:', error);
-    // Depending on your requirements, you might want to throw the error
-    // or continue if deletion failure is acceptable before insertion.
-    // For a seed, usually, you want a clean slate, so an error here is critical.
-    throw error;
-  }
-
-  // Step 2: Insert new artworks
-  try {
-    console.log(`Inserting ${mockArtworks.length} artworks...`);
-
-    await prisma.artwork.createMany({
-      data: mockArtworks,
-    });
-    console.log(`Inserted ${mockArtworks.length} new artworks.`);
-  } catch (error) {
-    console.error('Error inserting new artworks:', error);
-    throw error;
-  }
-
-  console.log('Seed script finished successfully.');
+// --- Delete all carts ---
+export async function deleteAllCarts() {
+  await prisma.cart.deleteMany({});
+  console.log("🗑️ Deleted all carts");
 }
 
-// To run the main function to insert artworks into the mongodb, 
-// run the following command in your terminal - npx tsx prisma/seed.ts
-main()
-  .catch(e => {
-    console.error('Error inserting artworks:', e);
-  })
-  .finally(async () => {
-    await prisma.$disconnect();
+// --- Seed carts using existing users & artworks ---
+export async function seedCarts() {
+  console.log("🛒 Seeding carts...");
+
+  // get first 3 users and first 5 artworks
+  const users = await prisma.user.findMany({
+    take: 3,
+    orderBy: { createdAt: 'asc' }, // deterministic order
   });
+
+  const artworks = await prisma.artwork.findMany({
+    take: 5,
+    orderBy: { createdAt: 'asc' },
+  });
+
+  if (users.length === 0 || artworks.length === 0) {
+    console.warn("⚠️ No users or artworks available to seed carts.");
+    return [];
+  }
+
+  const carts = [];
+
+  // each user gets the 5 artworks in cart
+  for (const user of users) {
+    for (const artwork of artworks) {
+      const cart = await prisma.cart.create({
+        data: {
+          cartedById: user.id,
+          artworkId: artwork.id,
+          quantity: 1, // fixed quantity
+          status: CartStatus.Active,
+        },
+      });
+      carts.push(cart);
+    }
+  }
+
+  console.log(`✅ Seeded ${carts.length} carts`);
+  return carts;
+}

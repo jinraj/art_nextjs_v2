@@ -3,7 +3,7 @@ import { mockArtworks } from '../app/data/seedMockData';
 
 const prisma = new PrismaClient();
 
-async function main() {
+export async function deleteAllArtworks() {
   console.log('Starting seed script...');
 
   // Step 1: Delete all existing artworks
@@ -18,29 +18,46 @@ async function main() {
     // For a seed, usually, you want a clean slate, so an error here is critical.
     throw error;
   }
+}
 
-  // Step 2: Insert new artworks
+export async function seedArtworks() {
   try {
-    console.log(`Inserting ${mockArtworks.length} artworks...`);
-
-    await prisma.artwork.createMany({
-      data: mockArtworks,
+    // Fetch eligible users (Artist or Admin)
+    const eligibleUsers = await prisma.user.findMany({
+      where: {
+        role: { in: ['Artist', 'Admin'] },
+      },
+      select: { id: true },
     });
-    console.log(`Inserted ${mockArtworks.length} new artworks.`);
+
+    if (eligibleUsers.length === 0) {
+      console.warn("⚠️ No Artist or Admin users found. Cannot seed artworks.");
+      return;
+    }
+
+    console.log(`Found ${eligibleUsers.length} eligible users.`);
+
+    // Distribute artworks across users
+    const artworksWithArtists = mockArtworks.map((artwork, index) => {
+      const assignedUser = eligibleUsers[index % eligibleUsers.length]; // round-robin distribution
+      return {
+        ...artwork,
+        artistId: assignedUser.id,
+      };
+    });
+
+    // Insert into DB
+    await prisma.artwork.createMany({
+      data: artworksWithArtists,
+    });
+
+    console.log(
+      `✅ Inserted ${artworksWithArtists.length} artworks, distributed among ${eligibleUsers.length} artists/admins.`
+    );
   } catch (error) {
-    console.error('Error inserting new artworks:', error);
+    console.error('❌ Error inserting new artworks:', error);
     throw error;
   }
 
-  console.log('Seed script finished successfully.');
+  console.log('🎨 Artwork seed script finished successfully.');
 }
-
-// To run the main function to insert artworks into the mongodb, 
-// run the following command in your terminal - npx tsx prisma/seed.ts
-main()
-  .catch(e => {
-    console.error('Error inserting artworks:', e);
-  })
-  .finally(async () => {
-    await prisma.$disconnect();
-  });

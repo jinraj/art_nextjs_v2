@@ -17,13 +17,14 @@ model Artwork {
   dimensions  String
   medium      String
   price       Float
-  artistName  String   @default("Jinraj")
+  artistId    String   @db.ObjectId
   likes       Int      @default(0)
   isHidden    Boolean  @default(false)
   isSold      Boolean  @default(false)
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 
+  artist     User        @relation(fields: [artistId], references: [id])
   orderItems OrderItem[] // relation back
   carts      Cart[] // relation back
 }
@@ -67,9 +68,10 @@ model User {
   createdAt  DateTime  @default(now())
   updatedAt  DateTime  @updatedAt
 
-  orders  Order[] // relation back
-  carts   Cart[] // relation back
-  reviews AppReview? // one review per user
+  orders   Order[] // relation back
+  carts    Cart[] // relation back
+  artworks Artwork[] // relation back
+  reviews  AppReview? // one review per user
 }
 
 enum Role {
