@@ -27,7 +27,6 @@ export default function ArtworkGallery() {
   React.useEffect(() => {
     const shuffled = shuffleArray([...mockArtworks]);
     const chunked = splitIntoGroups(shuffled, 5);
-    console.log("chunkedArtworks", chunked)
     setChunkedArtworks(chunked);
   }, []);
 

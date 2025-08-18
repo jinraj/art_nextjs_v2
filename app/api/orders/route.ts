@@ -45,7 +45,6 @@ export async function GET() {
       console.error("Forbidden: Fetching orders");
       return NextResponse.json({ error: "Forbidden" }, { status: 403 });
     }
-    console.log("Orders fetched successfully:", orders);
     return NextResponse.json(orders, { status: 200 });
   } catch (error) {
     console.error("Error fetching orders:", error);

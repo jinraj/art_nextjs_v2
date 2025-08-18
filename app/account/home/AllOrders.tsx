@@ -42,7 +42,6 @@ export default function AllOrders({orders}) {
     };
 
     const sortedOrders = sortOrders(orders || [], sortConfig.key, sortConfig.direction);
-    console.log("Sorted Orders:", sortedOrders);
     
     const renderSortIcon = (key: string) => {
         if (sortConfig.key !== key) return null;

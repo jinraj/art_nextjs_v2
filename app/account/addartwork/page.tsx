@@ -37,8 +37,6 @@ export default function AddArtwork() {
 
   const onSubmit = async (data: ArtworkFormInputs) => {
     setLoading(true);
-    console.log("Files:", selectedFiles);
-    console.log("Artwork Data:", data);
     setLoading(false);
   };
 

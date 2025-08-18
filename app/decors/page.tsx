@@ -39,7 +39,6 @@ const Decors = () => {
         const artworks: Artwork[] = Array.isArray(data) ? data : data?.artworks || [];
 
         const filtered = artworks.filter(item => item.artType === artType.Decors.name);
-        console.log("decors", decors);
         setDecors(filtered);
       } catch (err) {
         console.error('Error fetching artworks:', err);

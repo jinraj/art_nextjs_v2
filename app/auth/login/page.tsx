@@ -54,7 +54,6 @@ export default function LoginPage() {
       });
 
       if (result?.ok) {
-        console.log("Login successful", result);
         router.push("/account/home");
       } else {
         // Handle login errors

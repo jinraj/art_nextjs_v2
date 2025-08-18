@@ -23,7 +23,6 @@ export default function ImageCard({ listOfArtworks }: ImageCardProps) {
   const [selectedArtwork, setSelectedArtwork] = useState(null);
 
   const openPreviewModal = (artwork) => {
-    console.log("artwork", artwork);
     setSelectedArtwork(artwork);
   };
 
