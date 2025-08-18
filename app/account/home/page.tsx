@@ -12,9 +12,6 @@ import AllArtworks from './AllArtworks';
 import AllUsers from './AllUsers';
 import { useSession } from 'next-auth/react';
 
-// Helper function to mock API calls
-const mockFetch = (data: any, delay = 500) =>
-  new Promise(resolve => setTimeout(() => resolve(data), delay));
 
 // --- Main Component ---
 const AccountPage: React.FC = () => {
@@ -56,10 +53,11 @@ const AccountPage: React.FC = () => {
             break;
 
           case 'artworks':
-            res = await fetch('/api/artworks/byrole');
-            data = await res.json();
-            console.log("Fetched artworks:", data);
-            setArtworks(data as Artwork[]);
+            if (currentUser.role === Role.Admin || currentUser.role === Role.Artist) {
+              res = await fetch('/api/artworks/byrole');
+              data = await res.json();
+              setArtworks(data as Artwork[]);
+            }
             break;
 
           case 'reviews':
@@ -69,9 +67,11 @@ const AccountPage: React.FC = () => {
             break;
 
           case 'users':
-            res = await fetch('/api/users');
-            data = await res.json();
-            setAllUsers(data as User[]);
+            if (currentUser.role === Role.Admin) {
+              res = await fetch('/api/users');
+              data = await res.json();
+              setAllUsers(data as User[]);
+            }
             break;
 
           default:
