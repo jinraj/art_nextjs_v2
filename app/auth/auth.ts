@@ -1,89 +1,54 @@
 import { getServerSession } from 'next-auth';
-import { NextRequest, NextResponse } from 'next/server';
+import { NextResponse } from 'next/server';
 import { authOptions } from '../api/auth/authOptions';
+import { Role } from '@prisma/client';
 
-
-export function authenticateRequest(request: NextRequest) {
-  console.log("Authenticating request...");
-  const authHeader = request.headers.get('authorization');
-  if (!authHeader || !authHeader.startsWith('Bearer ')) {
-    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-  }
-
-  const token = authHeader.split(' ')[1];
-  if (token !== process.env.AUTH_SECRET) {
-    return NextResponse.json({ error: 'Invalid token' }, { status: 403 });
-  }
-
-  return null; // ✅ Null means authentication succeeded
-
-}
-
-export async function authenticateAdminRequest(request: NextRequest) {
+export async function authenticateRequestByRole(requiredRoles?: Role[]) {
   console.log("Authenticating admin request...");
   const session = await getServerSession(authOptions);
-  // Log the session for debugging
-  console.log('API Route Session:', session);
 
-  // Check if a session exists
   if (!session) {
     console.log('Unauthorized access: No session found.');
     return NextResponse.json({ message: 'Unauthorized' }, { status: 401 });
   }
 
-  // Optional: Add role-based authorization check here
-  // For example, if only 'admin' users should access these APIs
-  if (session.user && session.user.id !== 'admin') {
-    console.log('Forbidden access: User is not an admin.');
+  const userRole = session.user?.role as Role | undefined;
+
+  // ✅ Check if role is valid and in the allowed roles
+  if (!userRole || (requiredRoles && !requiredRoles.includes(userRole))) {
+    console.log('Forbidden access: User does not have required role.');
     return NextResponse.json({ message: 'Forbidden' }, { status: 403 });
   }
 
-  // If authenticated and authorized, return the session
-  return session;
-} 
+  if (session.user && !session.user.isApproved) {
+    console.log('Forbidden access: User is not approved.'); 
+    return NextResponse.json({ message: 'Forbidden' }, { status: 403 });
+  }
 
-export async function authenticateArtistRequest(request: NextRequest) {
-  console.log("Authenticating artist request...");
+  return session;
+}
+
+export async function authenticateRequestBySession() {
+  console.log("Authenticating admin request...");
   const session = await getServerSession(authOptions);
-  // Log the session for debugging
-  console.log('API Route Session:', session);
 
-  // Check if a session exists
   if (!session) {
     console.log('Unauthorized access: No session found.');
     return NextResponse.json({ message: 'Unauthorized' }, { status: 401 });
   }
 
-  // Optional: Add role-based authorization check here
-  // For example, if only 'artist' users should access these APIs
-  if (session.user && session.user.id !== 'artist') {
-    console.log('Forbidden access: User is not an artist.');
+  const userRole = session.user?.role as Role | undefined;
+
+  // Check if role is valid
+  if (!userRole) {
+    console.log('Forbidden access: User does not have required role.');
     return NextResponse.json({ message: 'Forbidden' }, { status: 403 });
   }
 
-  // If authenticated and authorized, return the session
-  return session;
-} 
-
-export async function authenticateCustomerRequest(request: NextRequest) {
-  console.log("Authenticating customer request...");
-  const session = await getServerSession(authOptions);
-  // Log the session for debugging
-  console.log('API Route Session:', session);
-
-  // Check if a session exists
-  if (!session) {
-    console.log('Unauthorized access: No session found.');
-    return NextResponse.json({ message: 'Unauthorized' }, { status: 401 });
-  }
-
-  // Optional: Add role-based authorization check here
-  // For example, if only 'customer' users should access these APIs
-  if (session.user && session.user.id !== 'customer') {
-    console.log('Forbidden access: User is not an customer.');
+  if (session.user && !session.user.isApproved) {
+    console.log('Forbidden access: User is not approved.'); 
     return NextResponse.json({ message: 'Forbidden' }, { status: 403 });
   }
 
-  // If authenticated and authorized, return the session
   return session;
-} 
+}

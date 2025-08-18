@@ -1,7 +1,6 @@
 
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from "@/prisma/client";
-import { authenticateRequest } from '@/app/auth/auth';
 
 // Basic in-memory rate limiter
 const ipLikeMap = new Map<string, Set<string>>();

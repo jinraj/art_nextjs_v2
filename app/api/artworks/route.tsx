@@ -4,7 +4,7 @@ import { createArtworkSchema, updateArtworkSchema } from "./schemaValidator";
 import path from "path";
 import { existsSync, mkdirSync } from "fs";
 import { writeFile } from "fs/promises";
-import { authenticateAdminRequest, authenticateRequest } from "@/app/auth/auth";
+import { authenticateRequestBySession } from "@/app/auth/auth";
 import { ArtType } from "@prisma/client";
 
 export async function GET(request: NextRequest) {
@@ -25,7 +25,7 @@ export async function GET(request: NextRequest) {
 export async function POST(request: NextRequest) {
   try {
     console.log("Inserting artwork...");
-    const session = await authenticateAdminRequest(request);
+    const session = await authenticateRequestBySession();
     if (session instanceof NextResponse) return session;
 
     const formData = await request.formData();
@@ -62,7 +62,7 @@ export async function POST(request: NextRequest) {
 export async function DELETE(request: NextRequest) {
   try {
     console.log("Deleting artwork...");
-    const session = await authenticateAdminRequest(request);
+    const session = await authenticateRequestBySession();
     if (session instanceof NextResponse) return session;
 
     const { id } = await request.json();
@@ -84,7 +84,7 @@ export async function DELETE(request: NextRequest) {
 export async function PUT(request: NextRequest) {
   try {
     console.log("Updating artwork...");
-    const session = await authenticateAdminRequest(request);
+    const session = await authenticateRequestBySession();
     if (session instanceof NextResponse) return session;
 
     const body = await request.json();

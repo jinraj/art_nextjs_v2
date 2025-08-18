@@ -4,15 +4,13 @@ import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { User2, ShoppingBag, Star, Palette, Users, Loader2 } from 'lucide-react';
-import { User, Artwork, Order, AppReview, Role, OrderStatus } from '@/app/models/artwork';
+import { User, Artwork, Order, AppReview, Role } from '@/app/models/artwork';
 import MyDetails from './MyDetails';
 import AllOrders from './AllOrders';
 import Reviews from './Reviews';
 import AllArtworks from './AllArtworks';
 import AllUsers from './AllUsers';
-import { mockUsers, mockArtworks, mockOrders, mockReviews } from '@/app/data/mockData';
 import { useSession } from 'next-auth/react';
-
 
 // Helper function to mock API calls
 const mockFetch = (data: any, delay = 500) =>
@@ -30,51 +28,67 @@ const AccountPage: React.FC = () => {
   const [allUsers, setAllUsers] = useState<User[] | null>(null);
   const [isLoading, setIsLoading] = useState(false);
 
- useEffect(() => {
+  useEffect(() => {
     if (session?.user) {
       setCurrentUser(session.user as User);
     }
   }, [session]);
 
-  // Fetch data based on the active section and user role
   useEffect(() => {
     if (!currentUser) return;
 
     const fetchData = async () => {
       setIsLoading(true);
-      switch (activeSection) {
-        case 'orders':
-          const fetchedOrders = await mockFetch(mockOrders);
-          const sortedOrders = (fetchedOrders as Order[]).sort((a, b) => {
-            if (a.status === OrderStatus.Pending && b.status !== OrderStatus.Pending) return -1;
-            if (a.status !== OrderStatus.Pending && b.status === OrderStatus.Pending) return 1;
-            return a.orderedAt.getTime() - b.orderedAt.getTime();
-          });
-          setOrders(sortedOrders);
-          break;
-        case 'artworks':
-          const fetchedArtworks = mockArtworks; // await mockFetch(mockArtworks);
-          setArtworks(fetchedArtworks as Artwork[]);
-          break;
-        case 'reviews':
-          const fetchedReviews = await mockFetch(mockReviews);
-          setReviews(fetchedReviews as AppReview[]);
-          break;
-        case 'users':
-          const fetchedUsers = await mockFetch(mockUsers);
-          setAllUsers(fetchedUsers as User[]);
-          break;
-        default:
-          setOrders(null);
-          setArtworks(null);
-          setReviews(null);
-          setAllUsers(null);
+
+      try {
+        let res, data;
+
+        switch (activeSection) {
+          case 'orders':
+            res = await fetch('/api/orders');
+            data = await res.json();
+            const sortedOrders = (data as Order[]).sort((a, b) => {
+              if (a.status === 'Pending' && b.status !== 'Pending') return -1;
+              if (a.status !== 'Pending' && b.status === 'Pending') return 1;
+              return new Date(a.orderedAt).getTime() - new Date(b.orderedAt).getTime();
+            });
+            setOrders(sortedOrders);
+            break;
+
+          case 'artworks':
+            res = await fetch('/api/artworks');
+            data = await res.json();
+            setArtworks(data as Artwork[]);
+            break;
+
+          case 'reviews':
+            res = await fetch('/api/reviews/byrole');
+            data = await res.json();
+            setReviews(data as AppReview[]);
+            break;
+
+          case 'users':
+            res = await fetch('/api/users');
+            data = await res.json();
+            setAllUsers(data as User[]);
+            break;
+
+          default:
+            setOrders(null);
+            setArtworks(null);
+            setReviews(null);
+            setAllUsers(null);
+        }
+      } catch (error) {
+        console.error('Error fetching data:', error);
+      } finally {
+        setIsLoading(false);
       }
-      setIsLoading(false);
     };
 
     fetchData();
   }, [activeSection, currentUser]);
+
 
   // Handle conditional data filtering
   const displayOrders = currentUser?.role === Role.Admin ? orders : orders?.filter(o => o.orderedById === currentUser?.id);

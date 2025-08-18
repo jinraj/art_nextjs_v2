@@ -56,7 +56,6 @@ export default function AllUsers({ allUsers }) {
                 "id",
                 "name",
                 "email",
-                "password",
                 "city",
                 "state",
                 "country",
@@ -94,7 +93,6 @@ export default function AllUsers({ allUsers }) {
                 <TableCell>{user.id}</TableCell>
                 <TableCell>{user.name}</TableCell>
                 <TableCell>{user.email}</TableCell>
-                <TableCell>{user.password}</TableCell>
                 <TableCell>{user.city}</TableCell>
                 <TableCell>{user.state}</TableCell>
                 <TableCell>{user.country}</TableCell>

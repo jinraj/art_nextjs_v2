@@ -1,12 +1,13 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "../../../prisma/client";
-import { authenticateAdminRequest, authenticateRequest } from "@/app/auth/auth";
+import { authenticateRequestByRole } from "@/app/auth/auth";
 import bcrypt from "bcryptjs";
+import { Role } from "@prisma/client";
 
-// ✅ GET: Fetch all users (admin only)
+// GET: Fetch all users (admin only)
 export async function GET(request: NextRequest) {
   try {
-    const session = await authenticateAdminRequest(request);
+    const session = await authenticateRequestByRole([Role.Admin]);
     if (session instanceof NextResponse) return session;
 
     const users = await prisma.user.findMany({
@@ -31,7 +32,7 @@ export async function GET(request: NextRequest) {
   }
 }
 
-// ✅ POST: Register a new user (self-registration)
+// POST: Register a new user (self-registration)
 export async function POST(request: NextRequest) {
   try {
     const { name, email, password, role, city, state, country } = await request.json();
@@ -72,7 +73,7 @@ export async function POST(request: NextRequest) {
 // ✅ PUT: Update user profile (self or admin)
 export async function PUT(request: NextRequest) {
   try {
-    const session = await authenticateAdminRequest(request); // normal auth
+    const session = await authenticateRequestBySession(); // normal auth
     if (session instanceof NextResponse) return session;
 
     const { id, ...updates } = await request.json();
@@ -100,7 +101,7 @@ export async function PUT(request: NextRequest) {
 // ✅ DELETE: Remove user (admin only)
 export async function DELETE(request: NextRequest) {
   try {
-    const session = await authenticateAdminRequest(request);
+    const session = await authenticateRequestBySession();
     if (session instanceof NextResponse) return session;
 
     const { id } = await request.json();

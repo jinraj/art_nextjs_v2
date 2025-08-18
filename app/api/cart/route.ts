@@ -1,14 +1,14 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { authenticateRequest } from "@/lib/auth"; // 🔒 normal user auth
-import { authenticateAdminRequest } from "@/lib/auth"; // 🔒 admin auth if needed
+import { authenticateRequest } from "@/lib/auth"; // 🔒 admin auth if needed
 
 // --------------------
 // GET /api/carts → get all carts for current user
 // --------------------
 export async function GET(request: NextRequest) {
   try {
-    const session = await authenticateAdminRequest(request);
+    const session = await authenticateRequestBySession();
     if (session instanceof NextResponse) return session;
 
     const userId = session.user.id;
@@ -33,7 +33,7 @@ export async function GET(request: NextRequest) {
 // --------------------
 export async function POST(request: NextRequest) {
   try {
-    const session = await authenticateAdminRequest(request);
+    const session = await authenticateRequestBySession();
     if (session instanceof NextResponse) return session;
 
     const { artworkId, quantity } = await request.json();
@@ -61,7 +61,7 @@ export async function POST(request: NextRequest) {
 // --------------------
 export async function PUT(request: NextRequest) {
   try {
-    const session = await authenticateAdminRequest(request);
+    const session = await authenticateRequestBySession();
     if (session instanceof NextResponse) return session;
 
     const { id, quantity, status } = await request.json();
@@ -89,7 +89,7 @@ export async function PUT(request: NextRequest) {
 // --------------------
 export async function DELETE(request: NextRequest) {
   try {
-    const session = await authenticateAdminRequest(request);
+    const session = await authenticateRequestBySession();
     if (session instanceof NextResponse) return session;
 
     const { id } = await request.json();

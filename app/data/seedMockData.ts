@@ -1,3 +1,4 @@
+import { OrderStatus } from "@prisma/client";
 
 
 export const mockArtworks = [
@@ -910,23 +911,37 @@ export const mockUsers = [
 
 // Mock Order Data based on the provided schema
 export const mockOrders = [
-    {
-        userId: "user_123",
-        totalAmount: 240.5,
-        status: "Pending"
-    },
-    {
-        id: "order_002",
-        userId: "user_456",
-        totalAmount: 320,
-        status: "Completed"
-    },
-    {
-        id: "order_003",
-        userId: "user_789",
-        totalAmount: 99.99,
-        status: "Cancelled"
-    },
+  {
+    userId: "68a2c67c85c7d5cfd8fca987", // replace with a real User ID from your DB
+    totalAmount: 4500.0,
+    status: OrderStatus.Pending,
+    orderedAt: new Date("2025-08-01T10:00:00Z"),
+    items: [
+      {
+        artworkId: "68a21ec1ad734c7c14c3249e",
+        quantity: 2,
+        priceAtPurchase: 1200.0,
+      },
+      {
+        artworkId: "68a21ec1ad734c7c14c324a4",
+        quantity: 1,
+        priceAtPurchase: 2100.0,
+      },
+    ],
+  },
+  {
+    userId: "68a2c67c85c7d5cfd8fca988", // replace with a real User ID
+    totalAmount: 3000.0,
+    status: OrderStatus.Completed,
+    orderedAt: new Date("2025-08-05T15:30:00Z"),
+    items: [
+      {
+        artworkId: "68a21ec1ad734c7c14c324c7",
+        quantity: 1,
+        priceAtPurchase: 3000.0,
+      },
+    ],
+  },
 ];
 
 // Mock AppReview Data based on the provided schema

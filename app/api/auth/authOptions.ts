@@ -60,6 +60,7 @@ export const authOptions = {
         // Add id and role to the JWT token when user logs in
         async jwt({ token, user }: { token: JWT; user?: User }) {
             if (user) {
+                token.id = user.id;
                 token.role = user.role;
                 token.email = user.email;
                 token.name = user.name;
@@ -74,6 +75,7 @@ export const authOptions = {
         // Add id and role from token to the session object
         async session({ session, token }: { session: Session; token: JWT }) {
             if (token && session.user) {
+                session.user.id = token.id as string;
                 session.user.role = token.role as string; 
                 session.user.email = token.email as string;
                 session.user.name = token.name as string;

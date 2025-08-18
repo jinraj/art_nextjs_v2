@@ -42,7 +42,8 @@ export default function AllOrders({orders}) {
     };
 
     const sortedOrders = sortOrders(orders || [], sortConfig.key, sortConfig.direction);
-
+    console.log("Sorted Orders:", sortedOrders);
+    
     const renderSortIcon = (key: string) => {
         if (sortConfig.key !== key) return null;
         return sortConfig.direction === "asc" ? <ArrowUp size={14} /> : <ArrowDown size={14} />;
@@ -105,7 +106,7 @@ export default function AllOrders({orders}) {
 
                             <TableCell>
                                 <div className="flex flex-col gap-1">
-                                    {order.items.map(item => (
+                                    {order.items?.length > 0 && order.items.map(item => (
                                         <span
                                             key={item.id}
                                             className="border px-2 py-1 rounded-3xl whitespace-nowrap"

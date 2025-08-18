@@ -1,46 +1,50 @@
+import { mockOrders } from '@/app/data/seedMockData';
 import { PrismaClient } from '@prisma/client';
-import { mockArtworks } from '../app/data/seedMockData';
 
 const prisma = new PrismaClient();
 
+
 async function main() {
-  console.log('Starting seed script...');
+  console.log("Starting order seed script...");
 
-  // Step 1: Delete all existing artworks
   try {
-    console.log(`Deleting all the existing artworks...`);
-    const deleteResult = await prisma.artwork.deleteMany({});
-    console.log(`Deleted ${deleteResult.count} existing artworks.`);
+    // Step 1: Delete all existing data
+    console.log("Deleting all OrderItems...");
+    const deletedItems = await prisma.orderItem.deleteMany({});
+    console.log(`Deleted ${deletedItems.count} OrderItems.`);
+
+    console.log("Deleting all Orders...");
+    const deletedOrders = await prisma.order.deleteMany({});
+    console.log(`Deleted ${deletedOrders.count} Orders.`);
+
+    // Step 2: Insert new mock orders
+    for (const order of mockOrders) {
+      console.log(`Creating order for user ${order.userId}...`);
+
+      await prisma.order.create({
+        data: {
+          userId: order.userId,
+          totalAmount: order.totalAmount,
+          status: order.status,
+          orderedAt: order.orderedAt,
+          items: {
+            create: order.items.map((item) => ({
+              artworkId: item.artworkId,
+              quantity: item.quantity,
+              priceAtPurchase: item.priceAtPurchase,
+            })),
+          },
+        },
+      });
+    }
+
+    console.log("Orders seeding finished successfully.");
   } catch (error) {
-    console.error('Error deleting existing artworks:', error);
-    // Depending on your requirements, you might want to throw the error
-    // or continue if deletion failure is acceptable before insertion.
-    // For a seed, usually, you want a clean slate, so an error here is critical.
+    console.error("Error while seeding orders:", error);
     throw error;
+  } finally {
+    await prisma.$disconnect();
   }
-
-  // Step 2: Insert new artworks
-  try {
-    console.log(`Inserting ${mockArtworks.length} artworks...`);
-
-    await prisma.artwork.createMany({
-      data: mockArtworks,
-    });
-    console.log(`Inserted ${mockArtworks.length} new artworks.`);
-  } catch (error) {
-    console.error('Error inserting new artworks:', error);
-    throw error;
-  }
-
-  console.log('Seed script finished successfully.');
 }
 
-// To run the main function to insert artworks into the mongodb, 
-// run the following command in your terminal - npx tsx prisma/seed.ts
-main()
-  .catch(e => {
-    console.error('Error inserting artworks:', e);
-  })
-  .finally(async () => {
-    await prisma.$disconnect();
-  });
+main();
