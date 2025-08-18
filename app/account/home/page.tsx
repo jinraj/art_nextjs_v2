@@ -11,6 +11,7 @@ import Reviews from './Reviews';
 import AllArtworks from './AllArtworks';
 import AllUsers from './AllUsers';
 import { mockUsers, mockArtworks, mockOrders, mockReviews } from '@/app/data/mockData';
+import { useSession } from 'next-auth/react';
 
 
 // Helper function to mock API calls
@@ -19,6 +20,7 @@ const mockFetch = (data: any, delay = 500) =>
 
 // --- Main Component ---
 const AccountPage: React.FC = () => {
+  const { data: session } = useSession();
   // State to manage the active section and data
   const [currentUser, setCurrentUser] = useState<User | null>(null);
   const [activeSection, setActiveSection] = useState<'details' | 'orders' | 'reviews' | 'artworks' | 'users'>('details');
@@ -28,12 +30,11 @@ const AccountPage: React.FC = () => {
   const [allUsers, setAllUsers] = useState<User[] | null>(null);
   const [isLoading, setIsLoading] = useState(false);
 
-  // Fetch initial user data (simulating a login session)
-  useEffect(() => {
-    // This is a placeholder for your actual auth check
-    const loggedInUser = mockUsers[2]; // Change this to mock different roles: 0 for customer, 1 for artist, 2 for admin
-    setCurrentUser(loggedInUser);
-  }, []);
+ useEffect(() => {
+    if (session?.user) {
+      setCurrentUser(session.user as User);
+    }
+  }, [session]);
 
   // Fetch data based on the active section and user role
   useEffect(() => {

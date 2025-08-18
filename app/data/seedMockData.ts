@@ -1,4 +1,4 @@
-import { AppReview, ArtType, Artwork, Order, OrderStatus, Role, User } from "@prisma/client";
+
 
 export const mockArtworks = [
     // ------------------- PAINTINGS (20) -------------------
@@ -861,104 +861,84 @@ export const mockArtworks = [
 ];
 
 // Mock User Data based on the provided schema
-export const mockUsers: User[] = [
+export const mockUsers = [
     {
-        id: 'user_1',
-        name: 'Jane Doe',
-        email: 'jane.doe@example.com',
-        password: 'password',
-        city: 'New York',
-        state: 'NY',
-        country: 'USA',
-        role: Role.Customer,
-        isApproved: false,
-        approvedAt: new Date(),
-        createdAt: new Date(),
-        updatedAt: new Date()
+      name: 'Sai Krishna',
+      email: 'sai@gmail.com',
+      password: 'password',
+      role: "Customer",
+      city: 'Delhi',
+      state: 'Delhi',
+      country: 'India',
+      isApproved: true,
+      approvedAt: new Date()
     },
     {
-        id: 'artist_1',
-        name: 'Leo da Vinci',
-        email: 'leo.davinci@example.com',
-        password: 'password',
-        city: 'London',
-        state: 'England',
-        country: 'UK',
-        role: Role.Artist,
-        isApproved: false,
-        approvedAt: new Date(),
-        createdAt: new Date(),
-        updatedAt: new Date()
+      name: 'Ramachandra S K',
+      email: 'ramachandra@gmail.com',
+      password: 'password',
+      role: "Artist",
+      city: 'Mumbai',
+      state: 'Maharashtra',
+      country: 'India',
+      isApproved: false,
+      approvedAt: null,
     },
     {
-        id: 'admin_1',
-        name: 'Admin User',
-        email: 'admin@example.com',
-        password: 'password',
-        city: 'Bengaluru',
-        state: 'Karnataka',
-        country: 'India',
-        role: Role.Admin,
-        isApproved: false,
-        approvedAt: new Date(),
-        createdAt: new Date(),
-        updatedAt: new Date()
+      name: 'Kishore Sharma',
+      email: 'kishore@gmail.com',
+      password: 'password',
+      role: "Artist",
+      city: 'Mumbai',
+      state: 'Maharashtra',
+      country: 'India',
+      isApproved: true,
+      approvedAt: new Date()
     },
-];
+    {
+      name: 'Jinraj K R',
+      email: 'jinrajkr@gmail.com',
+      password: 'password',
+      role: "Admin",
+      city: 'Bangalore',
+      state: 'Karnataka',
+      country: 'India',
+      isApproved: true,
+      approvedAt: new Date()
+    },
+  ]
 
 // Mock Order Data based on the provided schema
-export const mockOrders: Order[] = [
+export const mockOrders = [
     {
-        id: "order_001",
         userId: "user_123",
         totalAmount: 240.5,
-        status: OrderStatus.Pending,
-        orderedAt: new Date("2025-01-10"),
-        updatedAt: new Date("2025-01-12"),
-        items: [
-            { id: "oi_001", orderId: "order_001", artworkId: "art_101", quantity: 2, priceAtPurchase: 50 },
-            { id: "oi_002", orderId: "order_001", artworkId: "art_102", quantity: 1, priceAtPurchase: 140.5 },
-        ],
+        status: "Pending"
     },
     {
         id: "order_002",
         userId: "user_456",
         totalAmount: 320,
-        status: OrderStatus.Completed,
-        orderedAt: new Date("2025-01-05"),
-        updatedAt: new Date("2025-01-07"),
-        items: [
-            { id: "oi_003", orderId: "order_002", artworkId: "art_201", quantity: 4, priceAtPurchase: 80 },
-        ],
+        status: "Completed"
     },
     {
         id: "order_003",
         userId: "user_789",
         totalAmount: 99.99,
-        status: OrderStatus.Cancelled,
-        orderedAt: new Date("2025-01-02"),
-        updatedAt: new Date("2025-01-03"),
-        items: [
-            { id: "oi_004", orderId: "order_003", artworkId: "art_301", quantity: 1, priceAtPurchase: 99.99 },
-        ],
+        status: "Cancelled"
     },
 ];
+
 // Mock AppReview Data based on the provided schema
-export const mockReviews: AppReview[] = [
+export const mockReviews = [
     {
-        id: 'review_1',
         userId: 'user_1',
         rating: 5,
-        comment: 'Absolutely stunning! The new features are great.',
-        createdAt: new Date(),
-        updatedAt: new Date(),
+        comment: 'Absolutely stunning! The new features are great.'
     },
     {
-        id: 'review_2',
         userId: 'artist_1',
         rating: 4,
-        comment: 'Great app, easy to use.',
-        createdAt: new Date(new Date().setDate(new Date().getDate() - 2)),
-        updatedAt: new Date(),
+        comment: 'Great app, easy to use.'
     },
 ];

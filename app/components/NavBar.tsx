@@ -1,11 +1,11 @@
 'use client';
 
 import React, { useState } from 'react';
-import { Menu, X, ShoppingCart } from 'lucide-react';
+import { Menu, X, ShoppingCart, User } from 'lucide-react';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
+import { useSession, signOut } from 'next-auth/react';
 
-// Define the navigation links in a reusable array
 const navLinks: { text: string; href: string }[] = [
   { text: 'Home', href: '/' },
   { text: 'Paintings', href: '/paintings' },
@@ -31,8 +31,8 @@ const NavLink: React.FC<NavLinkProps> = ({ text, href }) => (
 export default function NavBar() {
   const router = useRouter();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-
-  // Example: this could come from global state (like Redux/Zustand/Context)
+  const [isProfileDropdownOpen, setIsProfileDropdownOpen] = useState(false);
+  const { data: session } = useSession();
   const cartItemCount: number = 3;
 
   return (
@@ -60,7 +60,6 @@ export default function NavBar() {
               </span>
             )}
           </a>
-          {/* Mobile Menu Button */}
           <button
             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
             className="md:hidden custom-paynes-gray focus:outline-none cursor-pointer"
@@ -70,9 +69,8 @@ export default function NavBar() {
           </button>
         </div>
 
-
         {/* Desktop Navigation */}
-        <nav className="hidden md:flex items-center space-x-8">
+        <nav className="hidden md:flex items-center space-x-8 relative">
           {navLinks.map((link) => (
             <NavLink key={link.text} text={link.text} href={link.href} />
           ))}
@@ -87,13 +85,38 @@ export default function NavBar() {
             )}
           </a>
 
-          <button
-            onClick={() => router.push("/auth/login")}
-            className="px-6 py-2 cursor-pointer rounded-full text-sm font-semibold bg-custom-amber text-custom-white transition-all duration-300 transform hover:scale-105"
-            style={{ boxShadow: `0 4px 6px -1px var(--custom-silver)` }}
-          >
-            Login
-          </button>
+          {/* Login or Profile Dropdown */}
+          {!session ? (
+            <button
+              onClick={() => router.push("/auth/login")}
+              className="px-6 py-2 cursor-pointer rounded-full text-sm font-semibold bg-custom-amber text-custom-white transition-all duration-300 transform hover:scale-105"
+              style={{ boxShadow: `0 4px 6px -1px var(--custom-silver)` }}
+            >
+              Login
+            </button>
+          ) : (
+            <div className="relative">
+              <button
+                onClick={() => setIsProfileDropdownOpen(!isProfileDropdownOpen)}
+                className="p-2 rounded-full border border-gray-300 hover:border-custom-amber transition"
+              >
+                <User size={24} className="text-custom-paynes-gray" />
+              </button>
+
+              {isProfileDropdownOpen && (
+                <div className="absolute right-0 mt-2 w-48 bg-white shadow-lg rounded-md p-4 z-50 text-center">
+                  <p className="text-sm font-semibold mb-4">{session.user?.name}</p>
+                  <NavLink text="My Account" href="/account/home" />
+                  <button
+                    onClick={() => signOut({ callbackUrl: "/" })}
+                    className="mt-4 w-full px-4 py-2 rounded-full text-sm font-semibold bg-custom-amber text-white hover:bg-red-600 transition-all"
+                  >
+                    Sign Out
+                  </button>
+                </div>
+              )}
+            </div>
+          )}
         </nav>
       </div>
 
@@ -112,17 +135,29 @@ export default function NavBar() {
             <NavLink key={link.text} text={link.text} href={link.href} />
           ))}
 
-          <button
-            onClick={() => {
-              setIsMobileMenuOpen(false);
-              router.push("/auth/login");
-            }}
-            className="mt-8 px-6 py-2 cursor-pointer rounded-full text-lg font-semibold bg-custom-amber text-custom-white transition-all duration-300 transform hover:scale-105">
-            Login
-          </button>
+          {!session ? (
+            <button
+              onClick={() => {
+                setIsMobileMenuOpen(false);
+                router.push("/auth/login");
+              }}
+              className="mt-8 px-6 py-2 cursor-pointer rounded-full text-lg font-semibold bg-custom-amber text-custom-white transition-all duration-300 transform hover:scale-105"
+            >
+              Login
+            </button>
+          ) : (
+            <div className="flex flex-col space-y-4 items-center">
+              <NavLink text="My Account" href="/account/home" />
+              <button
+                onClick={() => signOut({ callbackUrl: "/" })}
+                className="px-6 py-2 rounded-full text-lg mt-5 font-semibold bg-custom-amber text-white hover:bg-red-600 transition-all"
+              >
+                Sign Out
+              </button>
+            </div>
+          )}
         </div>
       )}
-
     </header>
   );
 }

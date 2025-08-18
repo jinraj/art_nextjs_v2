@@ -2,11 +2,16 @@ export interface User {
   id: string;
   name: string;
   email: string;
-  role: Role;
+  role: String;
   city: string;
   state: string;
   country: string;
+  isApproved: boolean;
+  createdAt: Date;
+  updatedAt: Date;
+  approveAt: Date | null;
 }
+
 
 export interface Order {
   id: string;

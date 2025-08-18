@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Knewave, Poppins } from "next/font/google";
 import "./styles/globals.css";
 import NavBar from "./components/NavBar";
+import AuthProvider from "./auth/AuthProvider";
 
 const fontTitle = Knewave({
   variable: "--font-title",
@@ -21,7 +22,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: "It Is Meaningful",
     description: "It Is Meaningful",
-    tags: "itismeaningful, it is meaningful, paintings, photography, decors, sale"
+    tags: "itismeaningful, it is meaningful, paintings, photography, decors, jinraj"
   }
 };
 
@@ -36,10 +37,12 @@ export default function RootLayout({
       <body
         className={`${fontTitle.variable} ${fontBody.variable} antialiased min-h-screen bg-custom-white`}
       >
-        <div className="fixed top-0 left-0 w-full z-100">
-          <NavBar />
-        </div>
-        <main>{children}</main>
+        <AuthProvider>
+          <div className="fixed top-0 left-0 w-full z-100">
+            <NavBar />
+          </div>
+          <main>{children}</main>
+        </AuthProvider>
       </body>
     </html>
   );

@@ -1,18 +1,14 @@
 
 import CredentialsProvider from "next-auth/providers/credentials"
 import { compare } from "bcryptjs"
-import { DefaultSession, Session, SessionStrategy, User } from "next-auth";
+import { DefaultSession, Session, SessionStrategy } from "next-auth";
 import { JWT } from "next-auth/jwt";
+import { prisma } from "@/prisma/client";
+import { User } from "@/app/models/artwork";
 
 declare module "next-auth" {
     interface Session {
-        user: {
-            id: string;
-        } & DefaultSession["user"];
-    }
-
-    interface User {
-        id: string;
+        user: User & DefaultSession["user"];
     }
 }
 
@@ -32,43 +28,65 @@ export const authOptions = {
                 password: { label: "Password", type: "password" }
             },
             async authorize(credentials, req) {
-                try {
-                    console.log("Authorizing user...");
-                    const encodedEmailB64 = process.env.ENCODED_ADMIN_EMAIL_B64;
-                    const encodedPasswordB64 = process.env.ENCODED_ADMIN_PASSWORD_B64;
-                    const decodedEmailHash = encodedEmailB64 ? Buffer.from(encodedEmailB64, 'base64').toString('utf8') : '';
-                    const decodedPasswordHash = encodedPasswordB64 ? Buffer.from(encodedPasswordB64, 'base64').toString('utf8') : '';
-                    if (!decodedEmailHash || !decodedPasswordHash) {
-                        throw new Error("Missing decoded ENCODED_ADMIN_EMAIL, ENCODED_ADMIN_PASSWORD");
-                    }
-
-                    const isMatchEmail = await compare(credentials!.email, decodedEmailHash);
-                    const isMatchPass = await compare(credentials!.password, decodedPasswordHash);
-
-                    return (isMatchEmail && isMatchPass) ? { id: "admin", name: "Admin" } : null;
-                } catch (err) {
-                    console.error("Authorize crashed:", err);
-                    return null; // still causes 401 but logs why
+                if (!credentials?.email || !credentials?.password) {
+                    throw new Error("Email and password are required");
                 }
+
+                const user = await prisma.user.findUnique({
+                    where: { email: credentials.email }
+                });
+
+                if (!user) {
+                    throw new Error("No user account found with this email");
+                }
+
+                if (!user.isApproved) {
+                    throw new Error("Account is not approved yet");
+                }
+
+                const hashedPassword = Buffer.from(user.password, 'base64').toString('utf8'); // decode from Base64
+                const isValid = await compare(credentials.password, hashedPassword);
+
+                if (!isValid) {
+                    throw new Error("Invalid password");
+                }
+
+                // this will be stored in session
+                return user;
             }
         })
     ],
     callbacks: {
-        async jwt({ token, user }: { token: JWT, user?: User }) {
+        // Add id and role to the JWT token when user logs in
+        async jwt({ token, user }: { token: JWT; user?: User }) {
             if (user) {
-                token.id = user.id;
+                token.role = user.role;
+                token.email = user.email;
+                token.name = user.name;
+                token.city = user.city; 
+                token.state = user.state; 
+                token.country = user.country;
+                token.isApproved = user.isApproved;
             }
             return token;
         },
-        async session({ session, token }: { session: Session; token: JWT; }) {
+
+        // Add id and role from token to the session object
+        async session({ session, token }: { session: Session; token: JWT }) {
             if (token && session.user) {
-                session.user.id = token.id as string;
+                session.user.role = token.role as string; 
+                session.user.email = token.email as string;
+                session.user.name = token.name as string;
+                session.user.city = token.city as string;
+                session.user.state = token.state as string;
+                session.user.country = token.country as string;
+                session.user.isApproved = token.isApproved as boolean;
             }
             return session;
         },
     },
     pages: {
-        signIn: "/login", // 👈 redirect to your custom login page
+        signIn: "/auth/login", // redirect to your custom login page
     },
     session: {
         strategy: "jwt" as SessionStrategy,

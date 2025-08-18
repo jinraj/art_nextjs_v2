@@ -11,7 +11,7 @@ import { useRouter } from "next/navigation";
 
 // ✅ Zod schemas
 const loginSchema = z.object({
-  email: z.string().email("Please enter a valid email address"),
+  email: z.email("Please enter a valid email address"),
   password: z.string().min(6, "Password must be at least 6 characters"),
 });
 
@@ -36,7 +36,6 @@ export default function LoginPage() {
     resolver: zodResolver(loginSchema),
   });
 
-  // ✅ Hook form for forgot password
   const {
     register: forgotRegister,
     handleSubmit: handleForgotSubmit,
@@ -45,28 +44,37 @@ export default function LoginPage() {
     resolver: zodResolver(forgotSchema),
   });
 
-  // ✅ Login handler
   const onLogin = async (data: LoginFormInputs) => {
     setLoading(true);
-    const result = await signIn("domain-login", {
-      redirect: false,
-      email: data.email,
-      password: data.password
-    })
-    setLoading(false);
-    if (result?.ok) {
-      router.push("/account/home");
-    } else {
-      console.error(result?.error);
+    try {
+      const result = await signIn("domain-login", {
+        redirect: false,
+        email: data.email,
+        password: data.password
+      });
+
+      if (result?.ok) {
+        console.log("Login successful", result);
+        router.push("/account/home");
+      } else {
+        // Handle login errors
+        console.error(result?.error);
+        alert(result?.error || "Login failed. Please try again.");
+      }
+    } catch (err) {
+      console.error("Login error:", err);
+      alert("Something went wrong during login.");
+    } finally {
+      setLoading(false);
     }
 
   };
 
-  // ✅ Forgot handler
+  // Forgot handler
   const onForgot = async (data: ForgotFormInputs) => {
     setLoading(true);
 
-    // 🔹 Here you should call your API to send reset email
+    // Here you should call your API to send reset email
     await new Promise((resolve) => setTimeout(resolve, 1500));
 
     alert(`Password reset link sent to ${data.email}`);
@@ -86,7 +94,7 @@ export default function LoginPage() {
             : "Login to continue exploring artworks"}
         </p>
 
-        {/* ✅ LOGIN FORM */}
+        {/* LOGIN FORM */}
         {!forgotMode && (
           <form onSubmit={handleLoginSubmit(onLogin)} className="mt-8 space-y-5">
             <InputField
@@ -115,7 +123,7 @@ export default function LoginPage() {
           </form>
         )}
 
-        {/* ✅ FORGOT FORM */}
+        {/* FORGOT FORM */}
         {forgotMode && (
           <form
             onSubmit={handleForgotSubmit(onForgot)}
@@ -139,7 +147,7 @@ export default function LoginPage() {
           </form>
         )}
 
-        {/* ✅ Footer Links */}
+        {/* Footer Links */}
         <div className="mt-6 flex justify-between text-xs text-slate-500">
           <a
             href="/auth/signup"
