@@ -56,7 +56,7 @@ export default function AllArtworks({ displayArtworks, currentUser }) {
       </TableHead>
     );
   };
-
+  console.log("Sorted artworks:", sortedArtworks);
   return (
     <div>
       {displayArtworks && displayArtworks.length > 0 ? (
@@ -71,15 +71,14 @@ export default function AllArtworks({ displayArtworks, currentUser }) {
               <SortableHeader columnKey="dimensions">Dimensions</SortableHeader>
               <SortableHeader columnKey="medium">Medium</SortableHeader>
               <SortableHeader columnKey="price">Price</SortableHeader>
-              <SortableHeader columnKey="artistName">ArtistName</SortableHeader>
+              {currentUser?.role === Role.Admin && (
+                <SortableHeader columnKey="artistName">Artist</SortableHeader>
+              )}
               <SortableHeader columnKey="likes">Likes</SortableHeader>
               <SortableHeader columnKey="isHidden">Hidden</SortableHeader>
               <SortableHeader columnKey="isSold">Sold</SortableHeader>
               <SortableHeader columnKey="createdAt">CreatedAt</SortableHeader>
               <SortableHeader columnKey="updatedAt">UpdatedAt</SortableHeader>
-              {currentUser?.role === Role.Admin && (
-                <SortableHeader columnKey="artistName">Artist</SortableHeader>
-              )}
               <TableHead>Actions</TableHead>
             </TableRow>
           </TableHeader>
@@ -117,7 +116,9 @@ export default function AllArtworks({ displayArtworks, currentUser }) {
                 <TableCell>{artwork.dimensions}</TableCell>
                 <TableCell>{artwork.medium}</TableCell>
                 <TableCell>${artwork.price.toFixed(2)}</TableCell>
-                <TableCell>{artwork.artistName}</TableCell>
+                {currentUser?.role === Role.Admin && (
+                  <TableCell>{artwork.artist.name}</TableCell>
+                )}
                 <TableCell>{artwork.likes}</TableCell>
                 <TableCell>{artwork.isHidden ? "Yes" : "No"}</TableCell>
                 <TableCell>
@@ -139,9 +140,7 @@ export default function AllArtworks({ displayArtworks, currentUser }) {
                 <TableCell>
                   {new Date(artwork.updatedAt).toLocaleDateString()}
                 </TableCell>
-                {currentUser?.role === Role.Admin && (
-                  <TableCell>{artwork.artistName}</TableCell>
-                )}
+
 
                 {/* Actions */}
                 <TableCell>

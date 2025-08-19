@@ -2,17 +2,9 @@
 
 import React, { useState } from 'react';
 import { Artwork } from '../models/artwork';
-// import PreviewArtworkPage from './PreviewArtwork';
 import Image from 'next/image';
 import { PreviewArtwork } from './PreviewArtwork';
 
-const colorStyles = `
-  .bg-custom-antiflash-white { background-color: #EEEEEE; }
-  .bg-custom-paynes-gray { background-color: #475569; }
-  .text-custom-paynes-gray { color: #475569; }
-  .text-custom-amber { color: #FFC000; }
-  .border-custom-amber { border-color: #FFC000; }
-`;
 
 interface ImageCardProps {
   listOfArtworks: Artwork[];
@@ -31,9 +23,6 @@ export default function ImageCard({ listOfArtworks }: ImageCardProps) {
   };
   return (
     <div className=" text-custom-paynes-gray font-sans py-16 px-4 md:px-4 min-h-screen">
-      <style jsx global>{`
-        ${colorStyles}
-      `}</style>
 
       {/* Gallery Grid Section */}
       <div className="grid grid-cols-2 md:grid-cols-4 xl:grid-cols-5 gap-6 w-full max-w-6xl px-4">

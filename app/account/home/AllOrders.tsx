@@ -2,13 +2,11 @@
 
 import { useState } from "react";
 import { Table, TableHead, TableHeader, TableRow, TableBody, TableCell } from "@/components/ui/table";
-import { format } from "date-fns";
 import { ArrowUp, ArrowDown } from "lucide-react";
-import { OrderStatus } from "@/app/models/artwork";
-
+import { Order, User, OrderStatus, Role } from "@prisma/client";
 
 // ---------- Sort helper ----------
-const sortOrders = (orders: any[], key: string, direction: "asc" | "desc") => {
+const sortOrders = (orders: Order[], key: string, direction: "asc" | "desc") => {
     return [...orders].sort((a, b) => {
         let valA = a[key as keyof typeof a];
         let valB = b[key as keyof typeof b];
@@ -27,7 +25,7 @@ const sortOrders = (orders: any[], key: string, direction: "asc" | "desc") => {
 };
 
 // ---------- Component ----------
-export default function AllOrders({orders}) {
+export default function AllOrders({ orders, currentUser }: { orders: Order[], currentUser: User }) {
     const [sortConfig, setSortConfig] = useState<{ key: string; direction: "asc" | "desc" }>({
         key: "orderedAt",
         direction: "desc",
@@ -42,11 +40,14 @@ export default function AllOrders({orders}) {
     };
 
     const sortedOrders = sortOrders(orders || [], sortConfig.key, sortConfig.direction);
-    
+
     const renderSortIcon = (key: string) => {
         if (sortConfig.key !== key) return null;
         return sortConfig.direction === "asc" ? <ArrowUp size={14} /> : <ArrowDown size={14} />;
     };
+
+    // Only Admin can see OrderedBy
+    const showOrderedBy = currentUser.role === Role.Admin;
 
     return (
         <div>
@@ -59,11 +60,13 @@ export default function AllOrders({orders}) {
                             </div>
                         </TableHead>
 
-                        <TableHead onClick={() => handleSort("userId")} className="cursor-pointer">
-                            <div className="flex items-center gap-1">
-                                Ordered By {renderSortIcon("userId")}
-                            </div>
-                        </TableHead>
+                        {showOrderedBy && (
+                          <TableHead onClick={() => handleSort("userId")} className="cursor-pointer">
+                              <div className="flex items-center gap-1">
+                                  Ordered By {renderSortIcon("userId")}
+                              </div>
+                          </TableHead>
+                        )}
 
                         <TableHead>Artworks - Price x Quantities</TableHead>
 
@@ -93,7 +96,6 @@ export default function AllOrders({orders}) {
                     </TableRow>
                 </TableHeader>
 
-
                 <TableBody>
                     {sortedOrders.map(order => (
                         <TableRow
@@ -101,7 +103,8 @@ export default function AllOrders({orders}) {
                             className="transition-transform duration-300 hover:bg-gray-100 text-custom-paynes-gray"
                         >
                             <TableCell>{order.id}</TableCell>
-                            <TableCell>{order.userId}</TableCell>
+
+                            {showOrderedBy && <TableCell>{order.userId}</TableCell>}
 
                             <TableCell>
                                 <div className="flex flex-col gap-1">
@@ -117,40 +120,28 @@ export default function AllOrders({orders}) {
                             </TableCell>
 
                             {/* Total Amount */}
-                            <TableCell>
-                                INR.{order.totalAmount.toFixed(2)}
-                            </TableCell>
+                            <TableCell>INR.{order.totalAmount.toFixed(2)}</TableCell>
 
                             {/* Status */}
                             <TableCell>
                                 <div className="flex items-center space-x-2">
                                     {order.status === OrderStatus.Pending && (
-                                        <span className="text-amber-500 flex items-center space-x-1">
-                                            <span>Pending</span>
-                                        </span>
+                                        <span className="text-amber-500">Pending</span>
                                     )}
                                     {order.status === OrderStatus.Completed && (
-                                        <span className="text-green-500 flex items-center space-x-1">
-                                            <span>Completed</span>
-                                        </span>
+                                        <span className="text-green-500">Completed</span>
                                     )}
                                     {order.status === OrderStatus.Cancelled && (
-                                        <span className="text-red-500 flex items-center space-x-1">
-                                            <span>Cancelled</span>
-                                        </span>
+                                        <span className="text-red-500">Cancelled</span>
                                     )}
                                 </div>
                             </TableCell>
 
                             {/* Ordered Date */}
-                            <TableCell>
-                                {new Date(order.orderedAt).toLocaleString()}
-                            </TableCell>
+                            <TableCell>{new Date(order.orderedAt).toLocaleString()}</TableCell>
 
                             {/* Updated Date */}
-                            <TableCell>
-                                {new Date(order.updatedAt).toLocaleString()}
-                            </TableCell>
+                            <TableCell>{new Date(order.updatedAt).toLocaleString()}</TableCell>
                         </TableRow>
                     ))}
                 </TableBody>
