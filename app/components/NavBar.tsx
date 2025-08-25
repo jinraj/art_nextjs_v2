@@ -6,6 +6,7 @@ import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { useSession, signOut } from 'next-auth/react';
 import { useCartStore } from '../stores/cartStore';
+import { get } from 'http';
 
 const navLinks: { text: string; href: string }[] = [
   { text: 'Home', href: '/' },
@@ -30,18 +31,25 @@ const NavLink: React.FC<NavLinkProps> = ({ text, href }) => (
 );
 
 export default function NavBar() {
-  const cartCount = useCartStore((state) => state.getCount());
-  const fetchCart = useCartStore((state) => state.fetchCart);
+  const getCount = useCartStore((state) => state.getCount);
 
-  console.log('Cart count:', cartCount);
   const router = useRouter();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isProfileDropdownOpen, setIsProfileDropdownOpen] = useState(false);
   const { data: session } = useSession();
+  const [cartCount, setCartCount] = useState(0);
 
   useEffect(() => {
-    fetchCart();
-  }, [fetchCart]);
+    const fetchCount = async () => {
+      if (session) {
+        await getCount();
+        // Get cart count from localStorage
+        const storedCount = localStorage.getItem("cart-storage");
+        setCartCount(Number(storedCount) || 0);
+      }
+    };
+    fetchCount();
+  }, [session]);
 
   return (
     <header className="fixed w-full z-50 backdrop-blur-md py-4 font-[Poppins] transition-all duration-300">
@@ -120,7 +128,10 @@ export default function NavBar() {
                   <p className="text-sm font-semibold mb-4">{session.user?.name}</p>
                   <NavLink text="My Account" href="/account/home" />
                   <button
-                    onClick={() => signOut({ callbackUrl: "/" })}
+                    onClick={() => {
+                      localStorage.removeItem("cart-storage");
+                      signOut({ callbackUrl: "/" });
+                    }}
                     className="mt-4 w-full px-4 py-2 rounded-full text-sm font-semibold bg-custom-amber text-white hover:bg-red-600 transition-all"
                   >
                     Sign Out

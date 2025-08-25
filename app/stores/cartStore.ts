@@ -10,7 +10,7 @@ interface CartState {
   removeItem: (id: string) => Promise<void>;
   updateQuantity: (id: string, quantity: number) => Promise<void>;
   clearCart: () => Promise<void>;
-  getCount: () => number;
+  getCount: () => Promise<void>;
 }
 
 export const useCartStore = create<CartState>()(
@@ -21,8 +21,10 @@ export const useCartStore = create<CartState>()(
       // Fetch cart from API immediately
       fetchCart: async () => {
         try {
+          console.log("Fetching cart from API...");
           // Clear local storage first
           localStorage.removeItem("cart-storage");
+          console.log("Local storage cleared.");
 
           const res = await fetch("/api/cart", { method: "GET" });
           if (!res.ok) throw new Error("Failed to fetch cart");
@@ -99,8 +101,22 @@ export const useCartStore = create<CartState>()(
         }
       },
 
-      getCount: () =>
-        get().cartItems.reduce((acc, item) => acc + item.quantity, 0),
+      getCount: async () => {
+        console.log("Fetching cart count from API...");
+        // Clear local storage first
+        localStorage.removeItem("cart-storage");
+        console.log("Local storage cleared.");
+
+        const res = await fetch("/api/cart/count", { method: "GET" });
+        const data = await res.json();
+        if (!res.ok) {
+          throw new Error("Failed to fetch cart count - " + data.message);
+        }
+        console.log("Cart count data:", data);
+        // Update store with new data
+        set({ cartItems: data.count });
+        localStorage.setItem("cart-storage", JSON.stringify(data.count));
+      }
     }),
     { name: "cart-storage" } // persist in localStorage
   )

@@ -11,7 +11,6 @@ interface CartItemProps {
 }
 
 export default function CartItem({ item, onUpdateQuantity, onRemove }: CartItemProps) {
-    console.log("Rendering CartItem for:", item);
     const [formattedPrice, setFormattedPrice] = useState<string>(item.artwork.price.toString());
 
     useEffect(() => {

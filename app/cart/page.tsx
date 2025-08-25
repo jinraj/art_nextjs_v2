@@ -9,13 +9,17 @@ import { useCartStore } from '../stores/cartStore';
 
 export default function CartPage() {
   const { data: session } = useSession();
-  const { cartItems, addItem, removeItem, updateQuantity } = useCartStore();
+  const { fetchCart, cartItems, addItem, removeItem, updateQuantity } = useCartStore();
   const [loading, setLoading] = useState(true);
 
   // Load cart from API into Zustand store
   useEffect(() => {
     const loadCart = async () => {
-      if (!session?.user) return;
+      if (session) {
+        console.log("User session found, fetching cart items...");
+        await fetchCart();
+        console.log("loaded cart items...");
+      }
       setLoading(false);
     };
     loadCart();
@@ -47,9 +51,12 @@ export default function CartPage() {
   };
 
   // Totals
-  const subtotal = cartItems.reduce((acc, item) => acc + item.artwork.price * item.quantity, 0);
-  const tax = subtotal * 0.18;
-  const total = subtotal + tax;
+  let subtotal = 0, tax = 0, total = 0;
+  if (!loading && cartItems.length > 0) {
+    subtotal = cartItems.reduce((acc, item) => acc + item.artwork.price * item.quantity, 0);
+    tax = subtotal * 0.18;
+    total = subtotal + tax;
+  }
 
   if (!session?.user) {
     return (
