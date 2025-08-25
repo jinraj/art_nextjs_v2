@@ -6,7 +6,6 @@ import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { useSession, signOut } from 'next-auth/react';
 import { useCartStore } from '../stores/cartStore';
-import { get } from 'http';
 
 const navLinks: { text: string; href: string }[] = [
   { text: 'Home', href: '/' },
@@ -31,25 +30,41 @@ const NavLink: React.FC<NavLinkProps> = ({ text, href }) => (
 );
 
 export default function NavBar() {
-  const getCount = useCartStore((state) => state.getCount);
-
+const { fetchCart, cartItems } = useCartStore();
   const router = useRouter();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isProfileDropdownOpen, setIsProfileDropdownOpen] = useState(false);
   const { data: session } = useSession();
-  const [cartCount, setCartCount] = useState(0);
+  // const [cartCount, setCartCount] = useState(0);
 
   useEffect(() => {
-    const fetchCount = async () => {
-      if (session) {
-        await getCount();
-        // Get cart count from localStorage
-        const storedCount = localStorage.getItem("cart-storage");
-        setCartCount(Number(storedCount) || 0);
+    if (session) {
+      fetchCart();
+    }
+  }, [session]);
+
+  useEffect(() => {
+    const updateCartCount = () => {
+      const localCart = localStorage.getItem("cart-storage");
+      let count = 0;
+      if (localCart) {
+        try {
+          const parsed = JSON.parse(localCart);
+          count = parsed.state?.cartItems?.length || 0;
+        } catch (e) {
+          count = 0;
+        }
       }
     };
-    fetchCount();
-  }, [session]);
+
+    // Initial load
+    updateCartCount();
+
+    window.addEventListener("storage", updateCartCount);
+    return () => {
+      window.removeEventListener("storage", updateCartCount);
+    };
+  }, []);
 
   return (
     <header className="fixed w-full z-50 backdrop-blur-md py-4 font-[Poppins] transition-all duration-300">
@@ -71,9 +86,9 @@ export default function NavBar() {
           {session && (
             <a href="/cart" className="relative">
               <ShoppingCart size={28} className="text-custom-paynes-gray" />
-              {cartCount > 0 && (
+              {cartItems.length > 0 && (
                 <span className="absolute -top-2 -right-2 bg-custom-amber text-white text-xs font-semibold rounded-full h-5 w-5 flex items-center justify-center">
-                  {cartCount}
+                  {cartItems.length}
                 </span>
               )}
             </a>
@@ -97,9 +112,9 @@ export default function NavBar() {
           {session && (
             <a href="/cart" className="relative">
               <ShoppingCart size={24} className="text-custom-paynes-gray hover:text-custom-amber transition-colors" />
-              {cartCount > 0 && (
+              {cartItems.length > 0 && (
                 <span className="absolute -top-2 -right-2 bg-custom-amber text-white text-xs font-semibold rounded-full h-5 w-5 flex items-center justify-center">
-                  {cartCount}
+                  {cartItems.length}
                 </span>
               )}
             </a>

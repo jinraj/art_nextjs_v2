@@ -7,6 +7,7 @@ import { useSession } from 'next-auth/react';
 import CartItem from './CartItem';
 import { useCartStore } from '../stores/cartStore';
 
+
 export default function CartPage() {
   const { data: session } = useSession();
   const { fetchCart, cartItems, addItem, removeItem, updateQuantity } = useCartStore();
@@ -29,11 +30,6 @@ export default function CartPage() {
   const handleUpdateQuantity = async (id: string, newQuantity: number) => {
     if (newQuantity < 1) return;
     try {
-      await fetch(`/api/cart/${id}`, {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ quantity: newQuantity }),
-      });
       updateQuantity(id, newQuantity); // update in Zustand store
     } catch (err) {
       console.error('Error updating cart item:', err);
@@ -43,8 +39,7 @@ export default function CartPage() {
   // Remove item
   const handleRemoveItem = async (id: string) => {
     try {
-      await fetch(`/api/cart/${id}`, { method: 'DELETE' });
-      removeItem(id); // remove from Zustand store
+      removeItem(id);
     } catch (err) {
       console.error('Error removing cart item:', err);
     }
@@ -53,6 +48,7 @@ export default function CartPage() {
   // Totals
   let subtotal = 0, tax = 0, total = 0;
   if (!loading && cartItems.length > 0) {
+    console.log("Calculating totals...", cartItems);
     subtotal = cartItems.reduce((acc, item) => acc + item.artwork.price * item.quantity, 0);
     tax = subtotal * 0.18;
     total = subtotal + tax;

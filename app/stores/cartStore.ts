@@ -10,7 +10,6 @@ interface CartState {
   removeItem: (id: string) => Promise<void>;
   updateQuantity: (id: string, quantity: number) => Promise<void>;
   clearCart: () => Promise<void>;
-  getCount: () => Promise<void>;
 }
 
 export const useCartStore = create<CartState>()(
@@ -21,17 +20,17 @@ export const useCartStore = create<CartState>()(
       // Fetch cart from API immediately
       fetchCart: async () => {
         try {
-          console.log("Fetching cart from API...");
+          console.log("Fetching cart items from API...");
           // Clear local storage first
           localStorage.removeItem("cart-storage");
           console.log("Local storage cleared.");
 
           const res = await fetch("/api/cart", { method: "GET" });
           if (!res.ok) throw new Error("Failed to fetch cart");
+          console.log("Cart fetched from API.");
           const data = await res.json();
+          set({ cartItems: data || [] });
 
-          // Update store with new data
-          set({ cartItems: data });
         } catch (err) {
           console.error("Error fetching cart:", err);
         }
@@ -39,24 +38,28 @@ export const useCartStore = create<CartState>()(
 
       addItem: async (item) => {
         try {
-          await fetch("/api/cart", {
+          console.log("Adding item to cart:", item);
+          const res = await fetch("/api/cart/" + item.id, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(item),
+            body: JSON.stringify({ artworkId: item.id, quantity: 1 }),
           });
+          if (!res.ok) throw new Error("Failed to add item to cart");
+          console.log("Cart added from API.");
 
           set((state) => {
             const existing = state.cartItems.find((i) => i.id === item.id);
+            let updatedCart;
             if (existing) {
-              return {
-                cartItems: state.cartItems.map((i) =>
-                  i.id === item.id
-                    ? { ...i, quantity: i.quantity + item.quantity }
-                    : i
-                ),
-              };
+              updatedCart = state.cartItems.map((i) =>
+                i.id === item.id
+                  ? { ...i, quantity: i.quantity + item.quantity }
+                  : i
+              );
+            } else {
+              updatedCart = [...state.cartItems, item];
             }
-            return { cartItems: [...state.cartItems, item] };
+            return { cartItems: updatedCart };
           });
         } catch (err) {
           console.error("Error adding item:", err);
@@ -65,10 +68,14 @@ export const useCartStore = create<CartState>()(
 
       removeItem: async (id) => {
         try {
-          await fetch(`/api/cart/${id}`, { method: "DELETE" });
-          set((state) => ({
-            cartItems: state.cartItems.filter((i) => i.id !== id),
-          }));
+          console.log("Removing item from cart:", id);
+          const res = await fetch(`/api/cart/${id}`, { method: "DELETE" });
+          if (!res.ok) throw new Error("Failed to remove item to cart");
+          console.log("Cart item removed from API.");
+          set((state) => {
+            const updatedCart = state.cartItems.filter((i) => i.id !== id);
+            return { cartItems: updatedCart };
+          });
         } catch (err) {
           console.error("Error removing item:", err);
         }
@@ -76,16 +83,19 @@ export const useCartStore = create<CartState>()(
 
       updateQuantity: async (id, quantity) => {
         try {
-          await fetch(`/api/cart/${id}`, {
+          const res = await fetch(`/api/cart/${id}`, {
             method: "PUT",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ quantity }),
           });
-          set((state) => ({
-            cartItems: state.cartItems.map((i) =>
+          if (!res.ok) throw new Error("Failed to update quantity to cart");
+          console.log("Cart item quantity updated from API.");
+          set((state) => {
+            const updatedCart = state.cartItems.map((i) =>
               i.id === id ? { ...i, quantity } : i
-            ),
-          }));
+            );
+            return { cartItems: updatedCart };
+          });
         } catch (err) {
           console.error("Error updating quantity:", err);
         }
@@ -93,29 +103,14 @@ export const useCartStore = create<CartState>()(
 
       clearCart: async () => {
         try {
-          await fetch("/api/cart", { method: "DELETE" });
+          const res = await fetch("/api/cart", { method: "DELETE" });
+          if (!res.ok) throw new Error("Failed to remove item to cart");
+          localStorage.removeItem("cart-storage");
+          console.log("Cart item removed from API.");
           set({ cartItems: [] });
-          localStorage.removeItem("cart-storage"); // ensure persisted data is cleared
         } catch (err) {
           console.error("Error clearing cart:", err);
         }
-      },
-
-      getCount: async () => {
-        console.log("Fetching cart count from API...");
-        // Clear local storage first
-        localStorage.removeItem("cart-storage");
-        console.log("Local storage cleared.");
-
-        const res = await fetch("/api/cart/count", { method: "GET" });
-        const data = await res.json();
-        if (!res.ok) {
-          throw new Error("Failed to fetch cart count - " + data.message);
-        }
-        console.log("Cart count data:", data);
-        // Update store with new data
-        set({ cartItems: data.count });
-        localStorage.setItem("cart-storage", JSON.stringify(data.count));
       }
     }),
     { name: "cart-storage" } // persist in localStorage

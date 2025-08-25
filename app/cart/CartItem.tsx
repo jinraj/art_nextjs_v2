@@ -43,7 +43,7 @@ export default function CartItem({ item, onUpdateQuantity, onRemove }: CartItemP
                         <button
                             onClick={() => onUpdateQuantity(item.id, item.quantity - 1)}
                             disabled={item.quantity <= 1}
-                            className="text-custom-silver hover:text-custom-paynes-gray disabled:opacity-50"
+                            className="text-custom-silver cursor-pointer hover:text-custom-paynes-gray disabled:opacity-50"
                         >
                             <Minus size={20} />
                         </button>
@@ -52,14 +52,14 @@ export default function CartItem({ item, onUpdateQuantity, onRemove }: CartItemP
                         </span>
                         <button
                             onClick={() => onUpdateQuantity(item.id, item.quantity + 1)}
-                            className="text-custom-silver hover:text-custom-paynes-gray"
+                            className="text-custom-silver cursor-pointer hover:text-custom-paynes-gray"
                         >
                             <Plus size={20} />
                         </button>
                     </div>
                     <button
                         onClick={() => onRemove(item.id)}
-                        className="text-red-500 hover:text-red-700 font-medium text-sm ml-6 sm:ml-10"
+                        className="text-red-500 cursor-pointer hover:text-red-700 font-medium text-sm ml-6 sm:ml-10"
                     >
                         Remove
                     </button>

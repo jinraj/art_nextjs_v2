@@ -2,8 +2,10 @@ import { Copy, Heart, ShoppingCart, X } from "lucide-react";
 import Image from "next/image";
 import { useState } from "react";
 import { FaWhatsapp } from "react-icons/fa";
+import { useCartStore } from "../stores/cartStore";
 
 export const PreviewArtwork = ({ artwork, onClose }) => {
+    const { fetchCart, addItem } = useCartStore();
     const [selectedImageIndex, setSelectedImageIndex] = useState(0);
     const [isLiked, setIsLiked] = useState(false);
     const mainImageUrl = artwork.images[selectedImageIndex];
@@ -22,6 +24,10 @@ export const PreviewArtwork = ({ artwork, onClose }) => {
     const toggleLike = () => {
         setIsLiked(!isLiked);
         setLikes(prev => (isLiked ? prev - 1 : prev + 1));
+    };
+
+    const handleAddToCart = async () => {
+        await addItem(artwork);
     };
 
     return (
@@ -100,6 +106,7 @@ export const PreviewArtwork = ({ artwork, onClose }) => {
                                 />
                             </button>
                             <button
+                                onClick={handleAddToCart}
                                 className="flex items-center gap-2 cursor-pointer border border-custom-amber text-custom-amber font-bold py-2 px-5 rounded-full hover:bg-custom-amber hover:text-white transition"
                             >
                                 <ShoppingCart size={20} /> Add to Cart
