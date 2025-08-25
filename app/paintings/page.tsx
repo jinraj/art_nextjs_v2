@@ -52,7 +52,7 @@ const Paintings = () => {
   }, []);
 
   return (
-    <div className="min-h-screen">
+    <div className="min-h-screen container mx-auto px-4">
       <TitleLayout
         title={artType.Paintings.name}
         quote={randomQuote || artType.Paintings.quotes[0]}

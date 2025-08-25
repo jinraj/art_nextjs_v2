@@ -52,7 +52,7 @@ const Photography = () => {
   }, []);
 
   return (
-    <div className="min-h-screen">
+    <div className="min-h-screen container mx-auto px-4">
       <TitleLayout
         title={artType.Photography.name}
         quote={randomQuote || artType.Photography.quotes[0]}
@@ -63,7 +63,7 @@ const Photography = () => {
         ) : error ? (
           <p className="text-red-500">Error loading: {error}</p>
         ) : photography.length === 0 ? (
-          <p className="text-gray-500">No photography available.</p>
+          <p className="text-gray-500">No photographs available.</p>
         ) : (
           <ImageCard listOfArtworks={photography} />
         )}

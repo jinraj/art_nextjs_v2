@@ -52,7 +52,7 @@ const Decors = () => {
   }, []);
 
   return (
-    <div className="min-h-screen">
+    <div className="min-h-screen container mx-auto px-4">
       <TitleLayout
         title={artType.Decors.name}
         quote={randomQuote || artType.Decors.quotes[0]}

@@ -1,209 +1,109 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
-import Image from 'next/image';
-import { Minus, Plus, ShoppingCart } from 'lucide-react';
+import React, { useEffect, useState } from 'react';
+import { ShoppingCart } from 'lucide-react';
 import TitleLayout from '../components/TitleLayout';
-
-const initialCartItems = [
-  {
-    id: 1,
-    name: 'The Ocean Abstraction',
-    artist: 'Alex Chen',
-    price: 75000,
-    image: '/resources/artworks/paintings/0db4ec40387045d7b3fb6caa2b32ac3a.jpg',
-    quantity: 1,
-  },
-  {
-    id: 2,
-    name: 'Vibrant Cityscape',
-    artist: 'Maria Rodriguez',
-    price: 52000,
-    image: '/resources/artworks/paintings/image3_1.jpg',
-    quantity: 2,
-  },
-  {
-    id: 3,
-    name: 'Geometric Sunset',
-    artist: 'John Doe',
-    price: 35000,
-    image: '/resources/artworks/photography/photo7_1.jpg',
-    quantity: 1,
-  },
-];
-
-
-// Define the type for cart item
-interface CartItemType {
-  id: number;
-  name: string;
-  artist: string;
-  price: number;
-  image: string;
-  quantity: number;
-}
-
-// Props for CartItem component
-interface CartItemProps {
-  item: CartItemType;
-  onUpdateQuantity: (id: number, newQuantity: number) => void;
-  onRemove: (id: number) => void;
-}
-
-// Reusable cart item component
-const CartItem: React.FC<CartItemProps> = ({ item, onUpdateQuantity, onRemove }) => {
-  const [formattedPrice, setFormattedPrice] = useState<string>(item.price.toString());
-
-  useEffect(() => {
-    if (typeof window !== 'undefined') {
-      setFormattedPrice(item.price.toLocaleString('en-IN'));
-    }
-  }, [item.price]);
-
-  return (
-    <div className="flex flex-row space-x-5 items-center border-b border-[var(--custom-silver)] py-6">
-      {/* Item Image */}
-      <div className="w-1/3 md:w-1/5 mb-4 md:mb-0 md:mr-6 flex-shrink-0">
-        <Image
-          src={item.image}
-          alt={item.name}
-          width={70}
-          height={120}
-          className="w-full h-50 md:h-48 object-cover rounded-xl shadow-lg"
-        />
-      </div>
-
-      {/* Item Details and Controls */}
-      <div className="flex-1 w-full md:w-auto">
-
-        <div>
-          <h3 className="text-sm text-custom-paynes-gray">{item.name}</h3>
-          <p className="text-xs text-custom-silver">by {item.artist}</p>
-        </div>
-        <div className="text-md font-semibold text-custom-paynes-gray my-5">
-          INR.{formattedPrice}
-        </div>
-
-        {/* Quantity Controls and Remove Button */}
-        <div className="flex  mt-4">
-          <div className="flex items-center space-x-2 border border-[var(--custom-silver)] rounded-full px-5 py-3">
-            <button
-              onClick={() => onUpdateQuantity(item.id, item.quantity - 1)}
-              className="text-custom-silver hover:text-custom-paynes-gray focus:outline-none disabled:opacity-50"
-              disabled={item.quantity <= 1}
-              aria-label="Decrease quantity"
-            >
-              <Minus size={20} />
-            </button>
-            <span className="text-sm font-semibold text-custom-paynes-gray w-6 text-center">
-              {item.quantity}
-            </span>
-            <button
-              onClick={() => onUpdateQuantity(item.id, item.quantity + 1)}
-              className="text-custom-silver hover:text-custom-paynes-gray focus:outline-none"
-              aria-label="Increase quantity"
-            >
-              <Plus size={20} />
-            </button>
-          </div>
-          <button
-            onClick={() => onRemove(item.id)}
-            className="text-red-500 hover:text-red-700 font-medium text-sm focus:outline-none ml-6 sm:ml-10"
-          >
-            Remove
-          </button>
-        </div>
-      </div>
-    </div>
-  );
-};
+import { useSession } from 'next-auth/react';
+import CartItem from './CartItem';
+import { useCartStore } from '../stores/cartStore';
 
 export default function CartPage() {
-  // Cart items state
-  const [cartItems, setCartItems] = useState<CartItemType[]>(initialCartItems);
+  const { data: session } = useSession();
+  const { cartItems, addItem, removeItem, updateQuantity } = useCartStore();
+  const [loading, setLoading] = useState(true);
 
-  // Handle quantity update
-  const handleUpdateQuantity = (id: number, newQuantity: number) => {
+  // Load cart from API into Zustand store
+  useEffect(() => {
+    const loadCart = async () => {
+      if (!session?.user) return;
+      setLoading(false);
+    };
+    loadCart();
+  }, [session, addItem]);
+
+  // Update quantity
+  const handleUpdateQuantity = async (id: string, newQuantity: number) => {
     if (newQuantity < 1) return;
-    setCartItems((prev) =>
-      prev.map((item) =>
-        item.id === id ? { ...item, quantity: newQuantity } : item
-      )
-    );
+    try {
+      await fetch(`/api/cart/${id}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ quantity: newQuantity }),
+      });
+      updateQuantity(id, newQuantity); // update in Zustand store
+    } catch (err) {
+      console.error('Error updating cart item:', err);
+    }
   };
 
-  // Handle item removal
-  const handleRemoveItem = (id: number) => {
-    setCartItems((prev) => prev.filter((item) => item.id !== id));
+  // Remove item
+  const handleRemoveItem = async (id: string) => {
+    try {
+      await fetch(`/api/cart/${id}`, { method: 'DELETE' });
+      removeItem(id); // remove from Zustand store
+    } catch (err) {
+      console.error('Error removing cart item:', err);
+    }
   };
 
   // Totals
-  const subtotal = cartItems.reduce((acc, item) => acc + item.price * item.quantity, 0);
-  const taxRate = 0.18;
-  const tax = subtotal * taxRate;
+  const subtotal = cartItems.reduce((acc, item) => acc + item.artwork.price * item.quantity, 0);
+  const tax = subtotal * 0.18;
   const total = subtotal + tax;
 
-  const [formattedTotals, setFormattedTotals] = useState({
-    subtotal: subtotal.toString(),
-    tax: tax.toString(),
-    total: total.toString(),
-  });
-
-  useEffect(() => {
-    if (typeof window !== 'undefined') {
-      setFormattedTotals({
-        subtotal: subtotal.toLocaleString(),
-        tax: tax.toLocaleString(),
-        total: total.toLocaleString(),
-      });
-    }
-  }, [subtotal, tax, total]);
+  if (!session?.user) {
+    return (
+      <div className="flex flex-col items-center justify-center min-h-screen">
+        <h2 className="text-xl font-bold text-custom-paynes-gray mb-2">Please log in</h2>
+        <p className="text-custom-silver">You need to sign in to view your cart.</p>
+      </div>
+    );
+  }
 
   return (
     <div className="font-[Poppins] md:p-12 min-h-screen">
       <TitleLayout title="Your Shopping Cart" quote="" />
 
       <div className="container mx-auto">
-        {cartItems.length > 0 ? (
+        {loading ? (
+          <p className="text-center text-custom-silver">Loading cart...</p>
+        ) : cartItems.length > 0 ? (
           <div className="flex flex-col lg:flex-row gap-8">
-            {/* Cart Items List */}
-            <div className="lg:w-2/3">
-              <div className="rounded-xl overflow-hidden p-6 bg-custom-white">
-                {cartItems.map((item) => (
-                  <CartItem
-                    key={item.id}
-                    item={item}
-                    onUpdateQuantity={handleUpdateQuantity}
-                    onRemove={handleRemoveItem}
-                  />
-                ))}
-              </div>
+            {/* Cart Items */}
+            <div className="lg:w-2/3 p-6 bg-custom-white rounded-xl">
+              {cartItems.map((item) => (
+                <CartItem
+                  key={item.id}
+                  item={item}
+                  onUpdateQuantity={handleUpdateQuantity}
+                  onRemove={handleRemoveItem}
+                />
+              ))}
             </div>
 
             {/* Order Summary */}
             <div className="lg:w-1/3">
-              <div className="rounded-xl overflow-hidden shadow-lg p-6 bg-custom-white">
+              <div className="rounded-xl shadow-lg p-6 bg-custom-white">
                 <h2 className="text-2xl font-bold text-custom-paynes-gray mb-6">
                   Order Summary
                 </h2>
-                <div className="space-y-4 text-sm md:text-sm text-custom-paynes-gray">
+                <div className="space-y-4 text-sm text-custom-paynes-gray">
                   <div className="flex justify-between">
                     <span>Subtotal</span>
-                    <span className="font-semibold">INR.{formattedTotals.subtotal}</span>
+                    <span className="font-semibold">INR.{subtotal.toLocaleString()}</span>
                   </div>
                   <div className="flex justify-between">
                     <span>Tax (18%)</span>
-                    <span className="font-semibold">INR.{formattedTotals.tax}</span>
+                    <span className="font-semibold">INR.{tax.toLocaleString()}</span>
                   </div>
-                  <div className="border-t border-[var(--custom-silver)] my-4 pt-4 flex justify-between items-center text-lg font-bold">
+                  <div className="border-t my-4 pt-4 flex justify-between text-lg font-bold">
                     <span>Total</span>
-                    <span className="text-custom-paynes-gray">INR.{formattedTotals.total}</span>
+                    <span className="text-custom-paynes-gray">
+                      INR.{total.toLocaleString()}
+                    </span>
                   </div>
                 </div>
-                <button
-                  className="w-full mt-6 px-6 py-3 rounded-full text-md font-semibold bg-custom-amber text-custom-white transition-all duration-300 transform hover:scale-105"
-                  style={{ boxShadow: `0 4px 6px -1px var(--custom-silver)` }}
-                >
+                <button className="w-full mt-6 px-6 py-3 rounded-full text-md font-semibold bg-custom-amber text-custom-white hover:scale-105 transition-all">
                   Proceed to Checkout
                 </button>
               </div>
@@ -218,10 +118,7 @@ export default function CartPage() {
             <p className="text-custom-silver mb-6 text-center">
               Looks like you haven't added any items yet.
             </p>
-            <button
-              className="px-6 py-3 rounded-full text-sm font-semibold bg-custom-amber text-custom-white transition-all duration-300 transform hover:scale-105"
-              style={{ boxShadow: `0 4px 6px -1px var(--custom-silver)` }}
-            >
+            <button className="px-6 py-3 rounded-full text-sm font-semibold bg-custom-amber text-custom-white hover:scale-105 transition-all">
               Start Shopping
             </button>
           </div>

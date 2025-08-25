@@ -1,10 +1,11 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Menu, X, ShoppingCart, User } from 'lucide-react';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { useSession, signOut } from 'next-auth/react';
+import { useCartStore } from '../stores/cartStore';
 
 const navLinks: { text: string; href: string }[] = [
   { text: 'Home', href: '/' },
@@ -29,11 +30,18 @@ const NavLink: React.FC<NavLinkProps> = ({ text, href }) => (
 );
 
 export default function NavBar() {
+  const cartCount = useCartStore((state) => state.getCount());
+  const fetchCart = useCartStore((state) => state.fetchCart);
+
+  console.log('Cart count:', cartCount);
   const router = useRouter();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isProfileDropdownOpen, setIsProfileDropdownOpen] = useState(false);
   const { data: session } = useSession();
-  const cartItemCount: number = 3;
+
+  useEffect(() => {
+    fetchCart();
+  }, [fetchCart]);
 
   return (
     <header className="fixed w-full z-50 backdrop-blur-md py-4 font-[Poppins] transition-all duration-300">
@@ -50,16 +58,18 @@ export default function NavBar() {
           </div>
         </a>
 
-        {/* Mobile-only Cart Icon */}
+        {/* Mobile-only Cart + Menu */}
         <div className="flex items-center space-x-4 md:hidden">
-          <a href="/cart" className="relative">
-            <ShoppingCart size={28} className="text-custom-paynes-gray" />
-            {cartItemCount > 0 && (
-              <span className="absolute -top-2 -right-2 bg-custom-amber text-white text-xs font-semibold rounded-full h-5 w-5 flex items-center justify-center">
-                {cartItemCount}
-              </span>
-            )}
-          </a>
+          {session && (
+            <a href="/cart" className="relative">
+              <ShoppingCart size={28} className="text-custom-paynes-gray" />
+              {cartCount > 0 && (
+                <span className="absolute -top-2 -right-2 bg-custom-amber text-white text-xs font-semibold rounded-full h-5 w-5 flex items-center justify-center">
+                  {cartCount}
+                </span>
+              )}
+            </a>
+          )}
           <button
             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
             className="md:hidden custom-paynes-gray focus:outline-none cursor-pointer"
@@ -76,16 +86,18 @@ export default function NavBar() {
           ))}
 
           {/* Cart Icon (Desktop) */}
-          <a href="/cart" className="relative">
-            <ShoppingCart size={24} className="text-custom-paynes-gray hover:text-custom-amber transition-colors" />
-            {cartItemCount > 0 && (
-              <span className="absolute -top-2 -right-2 bg-custom-amber text-white text-xs font-semibold rounded-full h-5 w-5 flex items-center justify-center">
-                {cartItemCount}
-              </span>
-            )}
-          </a>
+          {session && (
+            <a href="/cart" className="relative">
+              <ShoppingCart size={24} className="text-custom-paynes-gray hover:text-custom-amber transition-colors" />
+              {cartCount > 0 && (
+                <span className="absolute -top-2 -right-2 bg-custom-amber text-white text-xs font-semibold rounded-full h-5 w-5 flex items-center justify-center">
+                  {cartCount}
+                </span>
+              )}
+            </a>
+          )}
 
-          {/* Login or Profile Dropdown */}
+          {/* Login or Profile */}
           {!session ? (
             <button
               onClick={() => router.push("/auth/login")}
