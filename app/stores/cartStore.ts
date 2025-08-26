@@ -45,19 +45,19 @@ export const useCartStore = create<CartState>()(
             body: JSON.stringify({ artworkId: item.id, quantity: 1 }),
           });
           if (!res.ok) throw new Error("Failed to add item to cart");
-          console.log("Cart added from API.");
+          const data = await res.json();
 
           set((state) => {
             const existing = state.cartItems.find((i) => i.id === item.id);
             let updatedCart;
             if (existing) {
               updatedCart = state.cartItems.map((i) =>
-                i.id === item.id
-                  ? { ...i, quantity: i.quantity + item.quantity }
+                i.id === data.id
+                  ? { ...i, quantity: i.quantity + data.quantity }
                   : i
               );
             } else {
-              updatedCart = [...state.cartItems, item];
+              updatedCart = [...state.cartItems, data];
             }
             return { cartItems: updatedCart };
           });
@@ -68,10 +68,8 @@ export const useCartStore = create<CartState>()(
 
       removeItem: async (id) => {
         try {
-          console.log("Removing item from cart:", id);
           const res = await fetch(`/api/cart/${id}`, { method: "DELETE" });
           if (!res.ok) throw new Error("Failed to remove item to cart");
-          console.log("Cart item removed from API.");
           set((state) => {
             const updatedCart = state.cartItems.filter((i) => i.id !== id);
             return { cartItems: updatedCart };
@@ -89,7 +87,6 @@ export const useCartStore = create<CartState>()(
             body: JSON.stringify({ quantity }),
           });
           if (!res.ok) throw new Error("Failed to update quantity to cart");
-          console.log("Cart item quantity updated from API.");
           set((state) => {
             const updatedCart = state.cartItems.map((i) =>
               i.id === id ? { ...i, quantity } : i
@@ -106,7 +103,6 @@ export const useCartStore = create<CartState>()(
           const res = await fetch("/api/cart", { method: "DELETE" });
           if (!res.ok) throw new Error("Failed to remove item to cart");
           localStorage.removeItem("cart-storage");
-          console.log("Cart item removed from API.");
           set({ cartItems: [] });
         } catch (err) {
           console.error("Error clearing cart:", err);

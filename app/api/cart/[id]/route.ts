@@ -7,27 +7,27 @@ import { NextRequest, NextResponse } from "next/server";
 
 
 export async function DELETE(
-  request: NextRequest,
-  { params }: { params: { id: string } }
+    request: NextRequest,
+    { params }: { params: { id: string } }
 ) {
-  try {
-    const session = await authenticateRequestBySession();
-    if (session instanceof NextResponse) return session;
+    try {
+        const session = await authenticateRequestBySession();
+        if (session instanceof NextResponse) return session;
 
-    const { id } = await params;
-    if (!id) {
-      return NextResponse.json({ error: "Cart ID is required" }, { status: 400 });
+        const { id } = await params;
+        if (!id) {
+            return NextResponse.json({ error: "Cart ID is required" }, { status: 400 });
+        }
+
+        await prisma.cart.delete({
+            where: { id },
+        });
+
+        return NextResponse.json({ message: "Cart item deleted successfully" }, { status: 200 });
+    } catch (error) {
+        console.error("Error deleting cart:", error);
+        return NextResponse.json({ error: "Failed to delete cart" }, { status: 500 });
     }
-
-    await prisma.cart.delete({
-      where: { id },
-    });
-
-    return NextResponse.json({ message: "Cart item deleted successfully" }, { status: 200 });
-  } catch (error) {
-    console.error("Error deleting cart:", error);
-    return NextResponse.json({ error: "Failed to delete cart" }, { status: 500 });
-  }
 }
 
 
@@ -63,8 +63,10 @@ export async function POST(request: NextRequest) {
                 cartedById: session.user.id,
                 quantity: quantity ?? 1,
             },
+            include: {
+                artwork: true,
+            },
         });
-
         return NextResponse.json(cart, { status: 201 });
     } catch (error) {
         console.error("Error creating cart:", error);
