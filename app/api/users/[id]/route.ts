@@ -1,20 +1,15 @@
-// app/api/users/[id]/route.ts
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/prisma/client";
 import { authenticateRequestBySession } from "@/app/auth/auth";
 import { Role } from "@prisma/client";
 
 
-// ---------------- DELETE (admin only) ----------------
-export async function DELETE(
-    _request: NextRequest,
-    { params }: { params: { id: string } }
-) {
+export async function DELETE(request: NextRequest, context: any) {
     try {
         const session = await authenticateRequestBySession();
         if (session instanceof NextResponse) return session;
 
-        const userId = params?.id;
+        const userId = context.params?.id;
         if (!userId) {
             return NextResponse.json({ error: "User ID is required" }, { status: 400 });
         }
@@ -40,16 +35,13 @@ export async function DELETE(
     }
 }
 
-// ---------------- PATCH (self or admin) ----------------
-export async function PATCH(
-    request: NextRequest,
-    { params }: { params: { id: string } }
-) {
+
+export async function PATCH(request: NextRequest, context: any) {
     try {
         const session = await authenticateRequestBySession();
         if (session instanceof NextResponse) return session;
 
-        const userId = params?.id;
+        const userId = context.params?.id;
         if (!userId) {
             return NextResponse.json({ error: "User ID is required" }, { status: 400 });
         }

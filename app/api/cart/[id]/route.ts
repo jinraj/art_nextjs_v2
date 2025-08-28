@@ -1,20 +1,14 @@
-// --------------------
-// DELETE /api/carts → remove item from cart
-
 import { authenticateRequestBySession } from "@/app/auth/auth";
 import { prisma } from "@/prisma/client";
 import { NextRequest, NextResponse } from "next/server";
 
 
-export async function DELETE(
-    request: NextRequest,
-    { params }: { params: { id: string } }
-) {
+export async function DELETE(request: NextRequest, context: any) {
     try {
         const session = await authenticateRequestBySession();
         if (session instanceof NextResponse) return session;
 
-        const { id } = await params;
+        const { id } = context.params;
         if (!id) {
             return NextResponse.json({ error: "Cart ID is required" }, { status: 400 });
         }
@@ -77,17 +71,14 @@ export async function POST(request: NextRequest) {
     }
 }
 
-export async function PUT(
-    request: NextRequest,
-    { params }: { params: { id: string } }
-) {
+export async function PUT(request: Request, context: any) {
     try {
         console.log("Updating cart item...");
         const session = await authenticateRequestBySession();
         if (session instanceof NextResponse) return session;
 
         const { quantity, status } = await request.json();
-        const { id } = await params;
+        const { id } = context.params;
         if (!id) {
             return NextResponse.json({ error: "Cart ID is required" }, { status: 400 });
         }

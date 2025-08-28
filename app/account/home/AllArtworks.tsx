@@ -2,15 +2,35 @@
 
 import { useState, useMemo } from "react";
 import { Table, TableHead, TableHeader, TableRow, TableBody, TableCell } from "@/components/ui/table";
-import { Role } from "@prisma/client";
+import { Artwork, Role } from "@prisma/client";
 import { ArrowUp, ArrowDown, Edit, Trash } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
-export default function AllArtworks({ displayArtworks, currentUser }) {
-  const [sortConfig, setSortConfig] = useState<{ key: string; direction: "asc" | "desc" } | null>(null);
+type ArtworkWithArtist = Artwork & {
+  artist: {
+    name: string;
+  };
+};
+
+interface AllArtworksProps {
+  displayArtworks: ArtworkWithArtist[];
+  currentUser: {
+    role: Role;
+  };
+}
+
+type SortKey = keyof Omit<ArtworkWithArtist, 'artist' | 'images' | 'description'>;
+
+interface SortConfig {
+  key: SortKey;
+  direction: 'asc' | 'desc';
+}
+
+export default function AllArtworks({ displayArtworks, currentUser }: AllArtworksProps) {
+  const [sortConfig, setSortConfig] = useState<SortConfig | null>(null);
 
   // Handle sort toggling
-  const requestSort = (key: string) => {
+  const requestSort = (key: SortKey) => {
     let direction: "asc" | "desc" = "asc";
     if (sortConfig && sortConfig.key === key && sortConfig.direction === "asc") {
       direction = "desc";
@@ -18,21 +38,33 @@ export default function AllArtworks({ displayArtworks, currentUser }) {
     setSortConfig({ key, direction });
   };
 
-  // Sorted data
   const sortedArtworks = useMemo(() => {
     if (!sortConfig) return displayArtworks;
+
     return [...displayArtworks].sort((a, b) => {
-      const aValue = a[sortConfig.key];
-      const bValue = b[sortConfig.key];
+      // This assertion is safe because SortKey is constrained
+      const aValue = a[sortConfig.key as keyof Artwork] as any;
+      const bValue = b[sortConfig.key as keyof Artwork] as any;
 
       if (typeof aValue === "number" && typeof bValue === "number") {
         return sortConfig.direction === "asc" ? aValue - bValue : bValue - aValue;
       }
-      if (aValue instanceof Date || bValue instanceof Date) {
+
+      // Check specifically if both values are valid dates before attempting to sort
+      if (aValue instanceof Date && bValue instanceof Date) {
         return sortConfig.direction === "asc"
-          ? new Date(aValue).getTime() - new Date(bValue).getTime()
-          : new Date(bValue).getTime() - new Date(aValue).getTime();
+          ? aValue.getTime() - bValue.getTime()
+          : bValue.getTime() - aValue.getTime();
       }
+
+      // You'll need to handle boolean sorting as well
+      if (typeof aValue === "boolean" && typeof bValue === "boolean") {
+        const boolA = aValue ? 1 : 0;
+        const boolB = bValue ? 1 : 0;
+        return sortConfig.direction === "asc" ? boolA - boolB : boolB - boolA;
+      }
+
+      // Fallback for strings
       return sortConfig.direction === "asc"
         ? String(aValue).localeCompare(String(bValue))
         : String(bValue).localeCompare(String(aValue));
@@ -40,7 +72,7 @@ export default function AllArtworks({ displayArtworks, currentUser }) {
   }, [displayArtworks, sortConfig]);
 
   // Sortable header with conditional icon
-  const SortableHeader = ({ columnKey, children }) => {
+  const SortableHeader = ({ columnKey, children }: { columnKey: SortKey, children: React.ReactNode }) => {
     const isSorted = sortConfig?.key === columnKey;
     const direction = sortConfig?.direction;
 
@@ -56,7 +88,7 @@ export default function AllArtworks({ displayArtworks, currentUser }) {
       </TableHead>
     );
   };
-  console.log("Sorted artworks:", sortedArtworks);
+
   return (
     <div>
       {displayArtworks && displayArtworks.length > 0 ? (
@@ -66,13 +98,13 @@ export default function AllArtworks({ displayArtworks, currentUser }) {
               <SortableHeader columnKey="id">ID</SortableHeader>
               <SortableHeader columnKey="artType">ArtType</SortableHeader>
               <SortableHeader columnKey="title">Title</SortableHeader>
-              <SortableHeader columnKey="description">Description</SortableHeader>
+              <TableHead>Description</TableHead>
               <TableHead>Images</TableHead>
               <SortableHeader columnKey="dimensions">Dimensions</SortableHeader>
               <SortableHeader columnKey="medium">Medium</SortableHeader>
               <SortableHeader columnKey="price">Price</SortableHeader>
               {currentUser?.role === Role.Admin && (
-                <SortableHeader columnKey="artistName">Artist</SortableHeader>
+                <TableHead>Artist</TableHead> // Cannot sort by 'artistName' directly, so change to a standard TableHead
               )}
               <SortableHeader columnKey="likes">Likes</SortableHeader>
               <SortableHeader columnKey="isHidden">Hidden</SortableHeader>
@@ -98,7 +130,7 @@ export default function AllArtworks({ displayArtworks, currentUser }) {
                 <TableCell className=" min-w-[120px]">
                   <div className="flex flex-col space-y-2">
                     {artwork.images?.map((img, idx) => {
-                      const filename = img.split('/').pop(); // Extract filename only
+                      const filename = img.split('/').pop();
                       return (
                         <a
                           key={idx}
@@ -140,8 +172,6 @@ export default function AllArtworks({ displayArtworks, currentUser }) {
                 <TableCell>
                   {new Date(artwork.updatedAt).toLocaleDateString()}
                 </TableCell>
-
-
                 {/* Actions */}
                 <TableCell>
                   <div className="flex space-x-2">
@@ -161,7 +191,6 @@ export default function AllArtworks({ displayArtworks, currentUser }) {
                     </Button>
                   </div>
                 </TableCell>
-
               </TableRow>
             ))}
           </TableBody>
