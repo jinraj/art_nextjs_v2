@@ -50,7 +50,7 @@ export async function POST(request: NextRequest) {
       dimensions: formData.get('dimensions') as string,
       medium: formData.get('medium') as string,
       price: parseFloat(formData.get('price') as string),
-      artistName: formData.get('artistName') as string,
+      artistId: session.user.id,
       isHidden: formData.get('isHidden') === 'on',
       isSold: formData.get('isSold') === 'on',
       images: savedImagePaths

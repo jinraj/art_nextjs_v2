@@ -3,7 +3,7 @@
 import { useState, useMemo } from "react";
 import { Table, TableHead, TableHeader, TableRow, TableBody, TableCell } from "@/components/ui/table";
 import { Role } from "@prisma/client";
-import { CheckCircle, XCircle, ArrowUp, ArrowDown, Edit, Trash } from "lucide-react";
+import { ArrowUp, ArrowDown, Edit, Trash } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 export default function AllArtworks({ displayArtworks, currentUser }) {
@@ -115,7 +115,7 @@ export default function AllArtworks({ displayArtworks, currentUser }) {
                 </TableCell>
                 <TableCell>{artwork.dimensions}</TableCell>
                 <TableCell>{artwork.medium}</TableCell>
-                <TableCell>${artwork.price.toFixed(2)}</TableCell>
+                <TableCell>Rs.{artwork.price.toFixed(2)}</TableCell>
                 {currentUser?.role === Role.Admin && (
                   <TableCell>{artwork.artist.name}</TableCell>
                 )}

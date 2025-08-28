@@ -13,6 +13,7 @@ import AllUsers from './AllUsers';
 import { useSession } from 'next-auth/react';
 import { AppReview, Artwork, Order, Role, User } from '@prisma/client';
 import Link from 'next/link';
+import AddArtwork from './AddArtwork';
 
 
 // --- Main Component ---
@@ -20,7 +21,7 @@ const AccountPage: React.FC = () => {
   const { data: session } = useSession();
   // State to manage the active section and data
   const [currentUser, setCurrentUser] = useState<User | null>(null);
-  const [activeSection, setActiveSection] = useState<'details' | 'orders' | 'reviews' | 'artworks' | 'users'>('orders');
+  const [activeSection, setActiveSection] = useState<'details' | 'orders' | 'reviews' | 'artworks' | 'addartwork' | 'users'>('orders');
   const [orders, setOrders] = useState<Order[] | null>(null);
   const [artworks, setArtworks] = useState<Artwork[] | null>(null);
   const [reviews, setReviews] = useState<AppReview[] | null>(null);
@@ -103,6 +104,7 @@ const AccountPage: React.FC = () => {
 
     if (currentUser?.role === Role.Artist) {
       items.push({ id: 'artworks', label: 'My Artworks', icon: <Palette size={16} /> });
+      items.push({ id: 'addartwork', label: 'Add Artwork', icon: <Palette size={16} /> });
     } else if (currentUser?.role === Role.Admin) {
       items.push(
         { id: 'artworks', label: 'All Artworks', icon: <Palette size={16} /> },
@@ -179,6 +181,9 @@ const AccountPage: React.FC = () => {
                   )}
                   {activeSection === 'artworks' && (
                     <AllArtworks displayArtworks={artworks} currentUser={currentUser} />
+                  )}
+                  {activeSection === 'addartwork' && (
+                    <AddArtwork />
                   )}
                   {activeSection === 'users' &&
                     currentUser.role === Role.Admin && (
