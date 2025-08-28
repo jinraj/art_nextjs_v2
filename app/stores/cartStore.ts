@@ -27,8 +27,8 @@ export const useCartStore = create<CartState>()(
 
           const res = await fetch("/api/cart", { method: "GET" });
           if (!res.ok) throw new Error("Failed to fetch cart");
-          console.log("Cart fetched from API.");
           const data = await res.json();
+          console.log("Cart fetched from API.", data);
           set({ cartItems: data || [] });
 
         } catch (err) {
@@ -46,7 +46,7 @@ export const useCartStore = create<CartState>()(
           });
           if (!res.ok) throw new Error("Failed to add item to cart");
           const data = await res.json();
-
+          console.log("Item added to cart:", data);
           set((state) => {
             const existing = state.cartItems.find((i) => i.id === item.id);
             let updatedCart;

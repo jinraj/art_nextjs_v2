@@ -73,7 +73,7 @@ const { fetchCart, cartItems } = useCartStore();
         <a href="/">
           <div className="relative h-12 w-[40px]">
             <Image
-              src="/resources/application/logo.png"
+              src="/resources/application/logo1.png"
               alt="My Art"
               fill
               className="object-contain"
@@ -124,8 +124,7 @@ const { fetchCart, cartItems } = useCartStore();
           {!session ? (
             <button
               onClick={() => router.push("/auth/login")}
-              className="px-6 py-2 cursor-pointer rounded-full text-sm font-semibold bg-custom-amber text-custom-white transition-all duration-300 transform hover:scale-105"
-              style={{ boxShadow: `0 4px 6px -1px var(--custom-silver)` }}
+              className="px-6 py-2 cursor-pointer rounded-full text-sm font-semibold bg-custom-amber text-custom-white transition-all duration-300 transform hover:scale-105 shadow-custom-silver"
             >
               Login
             </button>

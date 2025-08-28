@@ -12,6 +12,7 @@ import AllArtworks from './AllArtworks';
 import AllUsers from './AllUsers';
 import { useSession } from 'next-auth/react';
 import { AppReview, Artwork, Order, Role, User } from '@prisma/client';
+import Link from 'next/link';
 
 
 // --- Main Component ---
@@ -117,7 +118,7 @@ const AccountPage: React.FC = () => {
     return (
       <div className="min-h-screen flex items-center justify-center bg-custom-antiflash-white p-4">
         <div className="text-center text-custom-paynes-gray">
-          <p>Please log in to view this page.</p>
+          <p>Please <Link href="/auth/login" className='text-blue-600'>log in</Link> to view this page.</p>
         </div>
       </div>
     );

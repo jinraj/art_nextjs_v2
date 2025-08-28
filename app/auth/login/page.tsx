@@ -45,29 +45,37 @@ export default function LoginPage() {
   });
 
   const onLogin = async (data: LoginFormInputs) => {
-    setLoading(true);
-    try {
-      const result = await signIn("domain-login", {
-        redirect: false,
-        email: data.email,
-        password: data.password
-      });
+  setLoading(true);
+  try {
+    const result = await signIn("domain-login", {
+      redirect: false,
+      email: data.email,
+      password: data.password
+    });
 
-      if (result?.ok) {
+    if (result?.ok) {
+      // Fetch session to get user role
+      const res = await fetch("/api/auth/session");
+      const session = await res.json();
+      const role = session?.user?.role;
+
+      if (role === "artist" || role === "admin") {
         router.push("/account/home");
       } else {
-        // Handle login errors
-        console.error(result?.error);
-        alert(result?.error || "Login failed. Please try again.");
+        router.push("/paintings");
       }
-    } catch (err) {
-      console.error("Login error:", err);
-      alert("Something went wrong during login.");
-    } finally {
-      setLoading(false);
+    } else {
+      // Handle login errors
+      console.error(result?.error);
+      alert(result?.error || "Login failed. Please try again.");
     }
-
-  };
+  } catch (err) {
+    console.error("Login error:", err);
+    alert("Something went wrong during login.");
+  } finally {
+    setLoading(false);
+  }
+};
 
   // Forgot handler
   const onForgot = async (data: ForgotFormInputs) => {

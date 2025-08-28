@@ -7,12 +7,13 @@ import { Mail, Lock, User, MapPin } from "lucide-react";
 import InputField from "@/app/components/InputField";
 import { useState, useMemo, useEffect } from "react";
 import { Role } from "@prisma/client";
-
+import { useRouter } from "next/navigation";
 import {
   Popover,
   PopoverTrigger,
   PopoverContent,
-} from "@/components/ui/popover"; // ✅ shadcn/ui popover
+} from "@/components/ui/popover";
+
 
 // ✅ Validation Schema
 const registerSchema = z.object({
@@ -22,6 +23,8 @@ const registerSchema = z.object({
   role: z.enum(["Customer", "Artist", "Admin"], {
     required_error: "Please select a role",
   }),
+  address: z.string().max(100, "Address cannot exceed 100 characters").optional(),
+  landmark: z.string().max(50, "Landmark cannot exceed 50 characters").optional(),
   city: z.string().min(2, "City is required"),
   state: z.string().min(2, "State is required"),
   country: z.string().min(2, "Country is required"),
@@ -45,9 +48,12 @@ const ROLE_INFO: Record<Role, { title: string; desc: string }> = {
 };
 
 export default function Signup() {
+  const router = useRouter();
+
   // ✅ Default role = Customer
   const [selectedRole, setSelectedRole] = useState<Role>(Role.Customer);
   const [openPopover, setOpenPopover] = useState<Role | null>(Role.Customer);
+  const [apiError, setApiError] = useState<string | null>(null);
 
   const {
     register,
@@ -62,8 +68,28 @@ export default function Signup() {
     setValue("role", Role.Customer); // pre-fill default role
   }, [setValue]);
 
+
   const onSubmit = async (data: RegisterSchema) => {
-    console.log("User data:", data);
+    setApiError(null);
+    try {
+      console.log("Submitting signup data:", data);
+      const res = await fetch("/api/users", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data),
+      });
+
+      const result = await res.json();
+      if (!res.ok) {
+        setApiError(result.error || "Signup failed.");
+        return;
+      }
+      console.log("Signup successful:", result);
+      router.push(`/auth/verifyuser?email=${encodeURIComponent(data.email)}`);
+    } catch (err) {
+      console.error("Signup error:", err);
+      setApiError("An error occurred. Please try again.");
+    }
   };
 
   const roles = useMemo(
@@ -85,18 +111,70 @@ export default function Signup() {
           Join us and start exploring amazing artworks
         </p>
 
+        {apiError && (
+          <div className="mt-4 rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-700">
+            {apiError}
+          </div>
+        )}
+
         <form onSubmit={handleSubmit(onSubmit)} className="mt-6 space-y-4">
           {/* Inputs */}
-          <InputField icon={<User className="text-custom-silver" size={18} />} placeholder="Full Name" {...register("name")} error={errors.name?.message} />
-          <InputField icon={<Mail className="text-custom-silver" size={18} />} placeholder="Email" type="email" {...register("email")} error={errors.email?.message} />
-          <InputField icon={<Lock className="text-custom-silver" size={18} />} placeholder="Password" type="password" {...register("password")} error={errors.password?.message} />
-          <InputField icon={<MapPin className="text-custom-silver" size={18} />} placeholder="City" {...register("city")} error={errors.city?.message} />
-          <InputField icon={<MapPin className="text-custom-silver" size={18} />} placeholder="State" {...register("state")} error={errors.state?.message} />
-          <InputField icon={<MapPin className="text-custom-silver" size={18} />} placeholder="Country" {...register("country")} error={errors.country?.message} />
+          <InputField
+            icon={<User className="text-custom-silver" size={18} />}
+            placeholder="Full Name"
+            {...register("name")}
+            error={errors.name?.message}
+          />
+          <InputField
+            icon={<Mail className="text-custom-silver" size={18} />}
+            placeholder="Email"
+            type="email"
+            {...register("email")}
+            error={errors.email?.message}
+          />
+          <InputField
+            icon={<Lock className="text-custom-silver" size={18} />}
+            placeholder="Password"
+            type="password"
+            {...register("password")}
+            error={errors.password?.message}
+          />
+          <InputField
+            icon={<MapPin className="text-custom-silver" size={18} />}
+            placeholder="Address"
+            {...register("address")}
+            error={errors.state?.message}
+          />
+          <InputField
+            icon={<MapPin className="text-custom-silver" size={18} />}
+            placeholder="Landmark"
+            {...register("landmark")}
+            error={errors.state?.message}
+          />
+          <InputField
+            icon={<MapPin className="text-custom-silver" size={18} />}
+            placeholder="City"
+            {...register("city")}
+            error={errors.city?.message}
+          />
+          <InputField
+            icon={<MapPin className="text-custom-silver" size={18} />}
+            placeholder="State"
+            {...register("state")}
+            error={errors.state?.message}
+          />
+          <InputField
+            icon={<MapPin className="text-custom-silver" size={18} />}
+            placeholder="Country"
+            {...register("country")}
+            error={errors.country?.message}
+          />
 
           {/* Role Selection */}
           <div>
-            <label className="block text-sm font-medium text-slate-600 mb-2">Select Role</label>
+            <label className="block text-sm font-medium text-slate-600 mb-2">
+              Select Role
+            </label>
             <div className="grid grid-cols-3 gap-2">
               {roles.map((role) => (
                 <Popover
@@ -119,13 +197,19 @@ export default function Signup() {
                       ].join(" ")}
                     >
                       <div className="text-xl mb-0.5">{role.icon}</div>
-                      <p className="text-xs sm:text-sm font-medium">{role.label}</p>
+                      <p className="text-xs sm:text-sm font-medium">
+                        {role.label}
+                      </p>
                     </button>
                   </PopoverTrigger>
 
                   <PopoverContent className="w-64 text-sm leading-relaxed">
-                    <h3 className="font-semibold text-custom-paynes-gray">{ROLE_INFO[role.id].title}</h3>
-                    <p className="mt-1 text-slate-600">{ROLE_INFO[role.id].desc}</p>
+                    <h3 className="font-semibold text-custom-paynes-gray">
+                      {ROLE_INFO[role.id].title}
+                    </h3>
+                    <p className="mt-1 text-slate-600">
+                      {ROLE_INFO[role.id].desc}
+                    </p>
 
                     <div className="mt-3 flex justify-end">
                       <button
@@ -140,14 +224,16 @@ export default function Signup() {
                 </Popover>
               ))}
             </div>
-            {errors.role && <p className="text-red-500 text-xs mt-1">{errors.role.message}</p>}
+            {errors.role && (
+              <p className="text-red-500 text-xs mt-1">{errors.role.message}</p>
+            )}
           </div>
 
           {/* Submit */}
           <button
             type="submit"
             disabled={isSubmitting}
-            className="w-full bg-custom-amber text-white py-3 rounded-xl font-semibold shadow-md transition hover:scale-105 active:scale-95"
+            className="w-full bg-custom-amber text-white py-3 rounded-xl font-semibold shadow-md transition hover:scale-105 active:scale-95 disabled:opacity-60"
           >
             {isSubmitting ? "Creating Account..." : "Create Account"}
           </button>
@@ -156,7 +242,10 @@ export default function Signup() {
         {/* Footer link */}
         <p className="mt-6 text-center text-sm text-slate-500">
           Already have an account?{" "}
-          <a href="/auth/login" className="text-custom-amber font-semibold hover:underline">
+          <a
+            href="/auth/login"
+            className="text-custom-amber font-semibold hover:underline"
+          >
             Login
           </a>
         </p>

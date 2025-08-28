@@ -1,10 +1,10 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "../../../../prisma/client";
-import { authenticateRequest, authenticateRequest } from "@/app/auth/auth";
+import { authenticateRequestBySession } from "@/app/auth/auth";
 
 export async function PATCH(request: NextRequest) {
   try {
-    const session = await authenticateRequestBySession(); // 🔒 admin check
+    const session = await authenticateRequestBySession();
     if (session instanceof NextResponse) return session;
 
     const { id, isApproved } = await request.json();

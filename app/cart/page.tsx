@@ -6,9 +6,11 @@ import TitleLayout from '../components/TitleLayout';
 import { useSession } from 'next-auth/react';
 import CartItem from './CartItem';
 import { useCartStore } from '../stores/cartStore';
+import { useRouter } from 'next/navigation';
 
 
 export default function CartPage() {
+  const router = useRouter();
   const { data: session } = useSession();
   const { fetchCart, cartItems, addItem, removeItem, updateQuantity } = useCartStore();
   const [loading, setLoading] = useState(true);
@@ -113,15 +115,15 @@ export default function CartPage() {
             </div>
           </div>
         ) : (
-          <div className="flex flex-col items-center justify-center p-12 bg-custom-antiflash-white rounded-xl shadow-lg">
-            <ShoppingCart size={96} className="text-custom-silver mb-6" />
-            <h2 className="text-xl md:text-2xl font-bold text-custom-paynes-gray mb-2">
+          <div className="flex flex-col items-center justify-center p-12 ">
+            <ShoppingCart size={50} className="text-custom-silver mb-6" />
+            <h2 className="text-lg md:text-lg font-bold text-custom-paynes-gray mb-2">
               Your cart is empty
             </h2>
             <p className="text-custom-silver mb-6 text-center">
               Looks like you haven't added any items yet.
             </p>
-            <button className="px-6 py-3 rounded-full text-sm font-semibold bg-custom-amber text-custom-white hover:scale-105 transition-all">
+            <button className="px-6 py-3 rounded-full text-sm font-semibold bg-custom-amber text-custom-white hover:scale-105 transition-all" onClick={() => router.push("/paintings")}  >
               Start Shopping
             </button>
           </div>

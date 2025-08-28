@@ -53,6 +53,9 @@ export async function POST(request: NextRequest) {
             const updated = await prisma.cart.update({
                 where: { id: existingItem.id },
                 data: { quantity: existingItem.quantity + (quantity ?? 1) },
+                include: {
+                    artwork: true,
+                },
             });
             return NextResponse.json(updated, { status: 200 });
         }

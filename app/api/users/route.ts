@@ -1,8 +1,10 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "../../../prisma/client";
-import { authenticateRequestByRole } from "@/app/auth/auth";
+import { authenticateRequestByRole, authenticateRequestBySession } from "@/app/auth/auth";
 import bcrypt from "bcryptjs";
 import { Role } from "@prisma/client";
+import { addMinutes, generateOtp, hashOtp } from "@/lib/emailOtp";
+import { sendVerificationEmail } from "@/lib/mailer";
 
 // GET: Fetch all users (admin only)
 export async function GET(request: NextRequest) {
@@ -15,6 +17,9 @@ export async function GET(request: NextRequest) {
         id: true,
         name: true,
         email: true,
+        verifiedAt: true,
+        address: true,
+        landmark: true,
         role: true,
         city: true,
         state: true,
@@ -22,6 +27,7 @@ export async function GET(request: NextRequest) {
         isApproved: true,
         approvedAt: true,
         createdAt: true,
+        updatedAt: true
       },
     });
 
@@ -35,7 +41,8 @@ export async function GET(request: NextRequest) {
 // POST: Register a new user (self-registration)
 export async function POST(request: NextRequest) {
   try {
-    const { name, email, password, role, city, state, country } = await request.json();
+    console.log("Received user registration request");
+    const { name, email, password, address, landmark, role, city, state, country } = await request.json();
 
     if (!email || !password) {
       return NextResponse.json({ error: "Email and password required" }, { status: 400 });
@@ -46,23 +53,45 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: "User already exists" }, { status: 400 });
     }
 
-    // Hash password before saving (important!)
     const hashedPassword = await bcrypt.hash(password, 10);
-    // const hashedPassword = password; // Replace with hashing
-
+    const base64Password = Buffer.from(hashedPassword).toString('base64'); // encode to Base64
+    console.log("Password hashed and encoded");
     const newUser = await prisma.user.create({
       data: {
         name,
         email,
-        password: hashedPassword,
-        role: role || "Artist",
+        verifiedAt: null,
+        password: base64Password,
+        role: role || "Customer",
+        address,
+        landmark,
         city,
         state,
         country,
-        isApproved: role === "Admin" ? false : true, // ✅ auto-approve artists, not admins
+        isApproved: role === "Customer" ? true : false, // Artists need approval
+        approvedAt: role === "Customer" ? new Date() : null,
       },
     });
+    console.log("Created new user in DB");
 
+    // Generate, hash, and store OTP
+    const code = await generateOtp(4);
+    console.log("Generated OTP");
+    const codeHash = await hashOtp(code);
+    console.log("Hashed OTP");
+    await prisma.verificationCode.create({
+      data: {
+        userId: newUser.id,
+        codeHash,
+        expiresAt: addMinutes(new Date(), 10),
+      },
+    });
+    console.log("Saved OTP to DB");
+
+    // Send verification email
+    await sendVerificationEmail(email, code);
+    console.log("Sent verification email");
+    
     return NextResponse.json(newUser, { status: 201 });
   } catch (error) {
     console.error("Error creating user:", error);
@@ -70,48 +99,3 @@ export async function POST(request: NextRequest) {
   }
 }
 
-// ✅ PUT: Update user profile (self or admin)
-export async function PUT(request: NextRequest) {
-  try {
-    const session = await authenticateRequestBySession(); // normal auth
-    if (session instanceof NextResponse) return session;
-
-    const { id, ...updates } = await request.json();
-    if (!id) return NextResponse.json({ error: "User ID is required" }, { status: 400 });
-
-    const updatedUser = await prisma.user.update({
-      where: { id },
-      data: {
-        name: updates.name,
-        city: updates.city,
-        state: updates.state,
-        country: updates.country,
-        ...(updates.isApproved !== undefined && { isApproved: updates.isApproved }),
-        ...(updates.approvedAt && { approvedAt: new Date(updates.approvedAt) }),
-      },
-    });
-
-    return NextResponse.json(updatedUser, { status: 200 });
-  } catch (error) {
-    console.error("Error updating user:", error);
-    return NextResponse.json({ error: "Failed to update user" }, { status: 500 });
-  }
-}
-
-// ✅ DELETE: Remove user (admin only)
-export async function DELETE(request: NextRequest) {
-  try {
-    const session = await authenticateRequestBySession();
-    if (session instanceof NextResponse) return session;
-
-    const { id } = await request.json();
-    if (!id) return NextResponse.json({ error: "User ID is required" }, { status: 400 });
-
-    const deletedUser = await prisma.user.delete({ where: { id } });
-
-    return NextResponse.json(deletedUser, { status: 200 });
-  } catch (error) {
-    console.error("Error deleting user:", error);
-    return NextResponse.json({ error: "Failed to delete user" }, { status: 500 });
-  }
-}

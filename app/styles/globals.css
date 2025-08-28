@@ -145,6 +145,10 @@ body {
   color: var(--custom-antiflash-white);
 }
 
+.shadow-custom-silver {
+  box-shadow: 0 4px 6px -1px var(--custom-silver);
+}
+
 .fill-custom-amber {
   color: var(--custom-amber);
 }

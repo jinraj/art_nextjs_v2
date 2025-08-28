@@ -1,8 +1,12 @@
-import React from 'react';
+'use client';
+
+import React, { use } from 'react';
 import { artType } from '../data/app';
+import { useRouter } from 'next/navigation';
 
 
 export default function PageTitle() {
+  const Router = useRouter();
   const colorPalette = {
     amber: '#FFC000',
     airForceBlue: '#658F9F',
@@ -20,8 +24,8 @@ export default function PageTitle() {
         {artType.Home.quotes[0]}
       </p>
       <button
-        className="mt-15 px-16 py-3 rounded-full text-lg font-semibold bg-custom-amber text-custom-white transition-all duration-300 transform hover:scale-105"
-        style={{ boxShadow: `0 4px 6px -1px ${colorPalette.silver}` }}
+        onClick={() => Router.push('/paintings')} // Add this handler
+        className="mt-15 px-16 py-3 rounded-full text-lg font-semibold shadow-custom-silver bg-custom-amber text-custom-white transition-all duration-300 transform hover:scale-105"
       >
         Explore
       </button>

@@ -864,84 +864,96 @@ export const mockArtworks = [
 // Mock User Data based on the provided schema
 export const mockUsers = [
     {
-      name: 'Sai Krishna',
-      email: 'sai@gmail.com',
-      password: 'password',
-      role: "Customer",
-      city: 'Delhi',
-      state: 'Delhi',
-      country: 'India',
-      isApproved: true,
-      approvedAt: new Date()
+        name: 'Sai Krishna',
+        email: 'sai@gmail.com',
+        password: 'password',
+        verifiedAt: new Date(),
+        role: "Customer",
+        address: '123, MG Road, Delhi',
+        landmark: 'Near Central Park',
+        city: 'Delhi',
+        state: 'Delhi',
+        country: 'India',
+        isApproved: true,
+        approvedAt: new Date()
     },
     {
-      name: 'Ramachandra S K',
-      email: 'ramachandra@gmail.com',
-      password: 'password',
-      role: "Artist",
-      city: 'Mumbai',
-      state: 'Maharashtra',
-      country: 'India',
-      isApproved: false,
-      approvedAt: null,
+        name: 'Ramachandra S K',
+        email: 'ramachandra@gmail.com',
+        password: 'password',
+        verifiedAt: new Date(),
+        role: "Artist",
+        address: '456, Link Road, Mumbai',
+        landmark: 'Opposite City Mall',
+        city: 'Mumbai',
+        state: 'Maharashtra',
+        country: 'India',
+        isApproved: false,
+        approvedAt: null,
     },
     {
-      name: 'Kishore Sharma',
-      email: 'kishore@gmail.com',
-      password: 'password',
-      role: "Artist",
-      city: 'Mumbai',
-      state: 'Maharashtra',
-      country: 'India',
-      isApproved: true,
-      approvedAt: new Date()
+        name: 'Kishore Sharma',
+        email: 'kishore@gmail.com',
+        password: 'password',
+        verifiedAt: new Date(),
+        role: "Artist",
+        address: '789, Park Avenue, Mumbai',
+        landmark: 'Next to Art Gallery',
+        city: 'Mumbai',
+        state: 'Maharashtra',
+        country: 'India',
+        isApproved: true,
+        approvedAt: new Date()
     },
     {
-      name: 'Jinraj K R',
-      email: 'jinrajkr@gmail.com',
-      password: 'password',
-      role: "Admin",
-      city: 'Bangalore',
-      state: 'Karnataka',
-      country: 'India',
-      isApproved: true,
-      approvedAt: new Date()
+        name: 'Jinraj K R',
+        email: 'jinrajkr@gmail.com',
+        password: 'password',
+        verifiedAt: new Date(),
+        role: "Admin",
+        address: '101, MG Road, Bangalore',
+        landmark: 'Near City Center',
+        city: 'Bangalore',
+        state: 'Karnataka',
+        country: 'India',
+        isApproved: true,
+        approvedAt: new Date()
     },
-  ]
+]
 
 // Mock Order Data based on the provided schema
 export const mockOrders = [
-  {
-    userId: "68a2c67c85c7d5cfd8fca987", // replace with a real User ID from your DB
-    totalAmount: 4500.0,
-    status: OrderStatus.Pending,
-    orderedAt: new Date("2025-08-01T10:00:00Z"),
-    items: [
-      {
-        artworkId: "68a21ec1ad734c7c14c3249e",
-        quantity: 2,
-        priceAtPurchase: 1200.0,
-      },
-      {
-        artworkId: "68a21ec1ad734c7c14c324a4",
-        quantity: 1,
-        priceAtPurchase: 2100.0,
-      },
-    ],
-  },
-  {
-    userId: "68a2c67c85c7d5cfd8fca988", // replace with a real User ID
-    totalAmount: 3000.0,
-    status: OrderStatus.Completed,
-    orderedAt: new Date("2025-08-05T15:30:00Z"),
-    items: [
-      {
-        artworkId: "68a21ec1ad734c7c14c324c7",
-        quantity: 1,
-        priceAtPurchase: 3000.0,
-      },
-    ],
-  },
+    {
+        userId: "68a2c67c85c7d5cfd8fca987", // replace with a real User ID from your DB
+        totalAmount: 4500.0,
+        status: OrderStatus.Pending,
+        orderedAt: new Date("2025-08-01T10:00:00Z"),
+        items: [
+            {
+                artworkId: "68a21ec1ad734c7c14c3249e",
+                quantity: 2,
+                priceAtPurchase: 1200.0,
+            },
+            {
+                artworkId: "68a21ec1ad734c7c14c324a4",
+                quantity: 1,
+                priceAtPurchase: 2100.0,
+            },
+        ],
+    },
+    {
+        userId: "68a2c67c85c7d5cfd8fca988", // replace with a real User ID
+        totalAmount: 3000.0,
+        status: OrderStatus.Completed,
+        orderedAt: new Date("2025-08-05T15:30:00Z"),
+        items: [
+            {
+                artworkId: "68a21ec1ad734c7c14c324c7",
+                quantity: 1,
+                priceAtPurchase: 3000.0,
+            },
+        ],
+    },
 ];
 
 // Mock AppReview Data based on the provided schema

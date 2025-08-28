@@ -1,5 +1,4 @@
-import { PrismaClient } from '@prisma/client';
-
+const { PrismaClient } = require("@prisma/client");
 const { deleteAllUsers, seedUsers } = require('./seedUsers');
 const { deleteAllArtworks, seedArtworks } = require('./seedArtworks');
 const { deleteAllCarts, seedCarts } = require('./seedCart');
