@@ -40,10 +40,6 @@ export const authOptions = {
                     throw new Error("No user account found with this email");
                 }
 
-                if (!user.isApproved) {
-                    throw new Error("Account is not approved yet");
-                }
-
                 const hashedPassword = Buffer.from(user.password, 'base64').toString('utf8'); // decode from Base64
                 const isValid = await compare(credentials.password, hashedPassword);
 
@@ -51,7 +47,14 @@ export const authOptions = {
                     throw new Error("Invalid password");
                 }
 
-                // this will be stored in session
+                if (!user.verifiedAt) {
+                    throw new Error("Email Unverified");
+                }
+
+                if (!user.isApproved) {
+                    throw new Error("Account is not approved yet");
+                }
+                
                 return user;
             }
         })

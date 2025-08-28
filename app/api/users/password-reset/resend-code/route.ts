@@ -4,8 +4,6 @@ import { prisma } from "@/prisma/client";
 import { generateOtp, hashOtp, addMinutes } from "@/lib/emailOtp";
 import { sendVerificationEmail } from "@/lib/mailer";
 
-export const runtime = "nodejs";
-
 const RESEND_COOLDOWN_SECONDS = 60;  // enforce cooldown only
 const OTP_TTL_MINUTES = 10;          // keep this stable for cooldown math
 
@@ -19,9 +17,6 @@ export async function POST(req: Request) {
 
     const user = await prisma.user.findUnique({ where: { email } });
     if (!user) return NextResponse.json({ error: "User not found" }, { status: 404 });
-    if (user.verifiedAt) {
-      return NextResponse.json({ error: "Email already verified" }, { status: 400 });
-    }
 
     const now = new Date();
 
@@ -78,3 +73,4 @@ export async function POST(req: Request) {
     );
   }
 }
+

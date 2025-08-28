@@ -180,13 +180,6 @@ export default function VerifyEmailPage() {
           </p>
         </div>
 
-        {/* Footer */}
-        <p className="mt-6 text-center text-sm text-slate-500">
-          Wrong email?{" "}
-          <a href="/auth/signup" className="text-custom-amber font-semibold hover:underline">
-            Go back and edit
-          </a>
-        </p>
       </div>
     </div>
   );

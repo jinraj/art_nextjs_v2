@@ -79,6 +79,7 @@ export async function POST(request: NextRequest) {
     console.log("Generated OTP");
     const codeHash = await hashOtp(code);
     console.log("Hashed OTP");
+    
     await prisma.verificationCode.create({
       data: {
         userId: newUser.id,
