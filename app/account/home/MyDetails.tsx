@@ -1,6 +1,7 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { User } from "@prisma/client";
 
-export default function MyDetails({currentUser}) {
+export default function MyDetails({ currentUser }: { currentUser: User }) {
     return (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <Card className="border-none shadow-sm bg-custom-antiflash-white/50">

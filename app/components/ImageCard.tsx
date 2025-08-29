@@ -1,20 +1,20 @@
 'use client';
 
 import React, { useState } from 'react';
-import { Artwork } from '../models/artwork';
 import Image from 'next/image';
 import { PreviewArtwork } from './PreviewArtwork';
+import { ArtworkWithArtist } from '../models/artwork';
 
 
 interface ImageCardProps {
-  listOfArtworks: Artwork[];
+  listOfArtworks: ArtworkWithArtist[];
 }
 
 export default function ImageCard({ listOfArtworks }: ImageCardProps) {
 
-  const [selectedArtwork, setSelectedArtwork] = useState(null);
+  const [selectedArtwork, setSelectedArtwork] = useState<ArtworkWithArtist | null>(null);
 
-  const openPreviewModal = (artwork) => {
+  const openPreviewModal = (artwork: ArtworkWithArtist) => {
     setSelectedArtwork(artwork);
   };
 

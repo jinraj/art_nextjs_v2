@@ -1,11 +1,11 @@
-import { Heart, ShoppingCart, Check, Loader2, X } from "lucide-react";
+import { Heart, ShoppingCart, X } from "lucide-react";
 import Image from "next/image";
 import { useState } from "react";
 import { useCartStore } from "../stores/cartStore";
-import { motion, AnimatePresence } from "framer-motion";
 import { useRouter } from "next/navigation";
+import { ArtworkWithArtist } from "../models/artwork";
 
-export const PreviewArtwork = ({ artwork, onClose }) => {
+export const PreviewArtwork = ({ artwork, onClose }: {artwork: ArtworkWithArtist, onClose: any}) => {
     const Router = useRouter();
     const { addItem } = useCartStore();
     const [selectedImageIndex, setSelectedImageIndex] = useState(0);
@@ -17,16 +17,6 @@ export const PreviewArtwork = ({ artwork, onClose }) => {
     const [buyState, setBuyState] = useState<"idle" | "processing">("idle");
 
     const mainImageUrl = artwork.images[selectedImageIndex];
-
-    const copyUrl = () => {
-        navigator.clipboard.writeText(window.location.href);
-        alert("Link copied to clipboard!");
-    };
-
-    const shareOnWhatsApp = () => {
-        const url = `https://api.whatsapp.com/send?text=Checkoutthisartwork:${window.location.href}`;
-        window.open(url, "_blank");
-    };
 
     const toggleLike = () => {
         setIsLiked((s) => !s);

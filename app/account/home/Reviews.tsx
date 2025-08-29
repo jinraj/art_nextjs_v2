@@ -1,39 +1,57 @@
 'use client';
 
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { Table, TableHead, TableHeader, TableRow, TableBody, TableCell } from "@/components/ui/table";
-import { Card, CardHeader, CardContent, CardTitle, CardDescription } from "@/components/ui/card";
+import { Card, CardHeader, CardContent, CardTitle } from "@/components/ui/card";
 import { Star } from "lucide-react";
+import { AppReview, User } from "@prisma/client";
 
-export default function Reviews({ reviews, currentUser }) {
-  const [sortConfig, setSortConfig] = useState<{ key: string | null; direction: "asc" | "desc" }>({
+type ReviewWithUser = AppReview & { user: User };
+
+interface AllReviewProps {
+  reviews: ReviewWithUser[];
+  currentUser: User;
+}
+
+type SortableReviewKeys = keyof AppReview;
+
+export default function Reviews({ reviews, currentUser }: AllReviewProps) {
+  const [sortConfig, setSortConfig] = useState<{ key: SortableReviewKeys; direction: "asc" | "desc" }>({
     key: "updatedAt",
     direction: "asc",
   });
 
-  const sortedReviews = [...(reviews || [])].sort((a, b) => {
-    if (!sortConfig.key) return 0;
+  const sortedReviews = useMemo(() => {
+    if (!reviews) return [];
 
-    let aVal = a[sortConfig.key];
-    let bVal = b[sortConfig.key];
+    const sorted = [...reviews].sort((a, b) => {
+      const key = sortConfig.key;
+      let aVal: any = a[key];
+      let bVal: any = b[key];
 
-    if (sortConfig.key === "createdAt" || sortConfig.key === "updatedAt") {
-      aVal = new Date(aVal).getTime();
-      bVal = new Date(bVal).getTime();
-    }
-
-    if (aVal < bVal) return sortConfig.direction === "asc" ? -1 : 1;
-    if (aVal > bVal) return sortConfig.direction === "asc" ? 1 : -1;
-    return 0;
-  });
-
-  const handleSort = (key: string) => {
-    setSortConfig((prev) => {
-      if (prev.key === key) {
-        return { key, direction: prev.direction === "asc" ? "desc" : "asc" };
+      if (key === "createdAt" || key === "updatedAt") {
+        aVal = new Date(aVal).getTime();
+        bVal = new Date(bVal).getTime();
       }
-      return { key, direction: "asc" };
+
+      if (aVal < bVal) {
+        return -1;
+      }
+      if (aVal > bVal) {
+        return 1;
+      }
+      return 0;
     });
+
+    return sortConfig.direction === "asc" ? sorted : sorted.reverse();
+  }, [reviews, sortConfig]);
+
+  const handleSort = (key: SortableReviewKeys) => {
+    setSortConfig(prev =>
+      prev.key === key
+        ? { key, direction: prev.direction === "asc" ? "desc" : "asc" }
+        : { key, direction: "asc" }
+    );
   };
 
   // --- Card View for Artist/Customer ---

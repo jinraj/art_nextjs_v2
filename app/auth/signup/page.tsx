@@ -1,4 +1,4 @@
-"use client";
+'use client';
 
 import { useForm } from "react-hook-form";
 import { z } from "zod";
@@ -21,7 +21,7 @@ const registerSchema = z.object({
   email: z.string().email("Invalid email address"),
   password: z.string().min(6, "Password must be at least 6 characters"),
   role: z.enum(["Customer", "Artist", "Admin"], {
-    required_error: "Please select a role",
+    message: "Please select a role",
   }),
   address: z.string().max(100, "Address cannot exceed 100 characters").optional(),
   landmark: z.string().max(50, "Landmark cannot exceed 50 characters").optional(),

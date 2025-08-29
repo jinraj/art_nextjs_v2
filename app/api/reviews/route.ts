@@ -30,7 +30,10 @@ export async function POST(request: NextRequest) {
     const session = await authenticateRequestBySession();
     if (session instanceof NextResponse) return session;
 
-    if (![Role.Customer, Role.Artist].includes(session.user.role)) {
+    const isCustomerOrArtist = (role: Role) =>
+      role === Role.Customer || role === Role.Artist;
+
+    if (!isCustomerOrArtist(session.user.role as Role)) {
       return NextResponse.json({ error: "Forbidden" }, { status: 403 });
     }
 
@@ -72,7 +75,10 @@ export async function PUT(request: NextRequest) {
     const session = await authenticateRequestBySession();
     if (session instanceof NextResponse) return session;
 
-    if (![Role.Customer, Role.Artist].includes(session.user.role)) {
+    const isCustomerOrArtist = (role: Role) =>
+      role === Role.Customer || role === Role.Artist;
+
+    if (!isCustomerOrArtist(session.user.role as Role)) {
       return NextResponse.json({ error: "Forbidden" }, { status: 403 });
     }
 

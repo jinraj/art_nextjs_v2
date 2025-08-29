@@ -1,12 +1,14 @@
 // stores/cartStore.ts
-import { Cart } from "@prisma/client";
+import { Artwork, Cart } from "@prisma/client";
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 
+type CartItemType = Cart & { artwork: Artwork };
+
 interface CartState {
-  cartItems: Cart[];
+  cartItems: CartItemType[];
   fetchCart: () => Promise<void>;
-  addItem: (item: Cart) => Promise<void>;
+  addItem: (item: Artwork) => Promise<void>;
   removeItem: (id: string) => Promise<void>;
   updateQuantity: (id: string, quantity: number) => Promise<void>;
   clearCart: () => Promise<void>;

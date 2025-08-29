@@ -13,7 +13,7 @@ async function hashPassword(password: string) {
 }
 
 export async function deleteAllUsers() {
-  // 1️⃣ Delete all existing users
+  // Delete all existing users
   await prisma.user.deleteMany({});
   console.log('All users deleted.');
 }

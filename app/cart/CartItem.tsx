@@ -1,11 +1,11 @@
 import { useEffect, useState } from "react";
 import Image from "next/image";
 import { Minus, Plus } from "lucide-react";
-import { CartItemType } from "../stores/cartStore";
+import { Cart } from "@prisma/client";
 
 
 interface CartItemProps {
-    item: CartItemType;
+    item: Cart & { artwork: { title: string; price: number; images: string[] } };
     onUpdateQuantity: (id: string, newQuantity: number) => void;
     onRemove: (id: string) => void;
 }

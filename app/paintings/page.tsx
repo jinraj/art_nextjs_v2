@@ -2,12 +2,12 @@
 
 import React, { useEffect, useState } from 'react';
 import TitleLayout from '../components/TitleLayout';
-import { Artwork } from '../models/artwork';
 import ImageCard from '../components/ImageCard';
 import { artType } from '../data/app';
+import { ArtworkWithArtist } from '../models/artwork';
 
 const Paintings = () => {
-  const [paintings, setPaintings] = useState<Artwork[]>([]);
+  const [paintings, setPaintings] = useState<ArtworkWithArtist[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [randomQuote, setRandomQuote] = useState<string | null>(null);
@@ -36,7 +36,7 @@ const Paintings = () => {
         }
 
         const data = await res.json();
-        const artworks: Artwork[] = Array.isArray(data) ? data : data?.artworks || [];
+        const artworks: ArtworkWithArtist[] = Array.isArray(data) ? data : data?.artworks || [];
 
         const filtered = artworks.filter(item => item.artType === artType.Paintings.name);
         setPaintings(filtered);

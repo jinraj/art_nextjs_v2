@@ -1,5 +1,4 @@
-import { mockOrders } from '@/app/data/seedMockData';
-import { PrismaClient } from '@prisma/client';
+import { OrderStatus, PrismaClient } from '@prisma/client';
 
 const prisma = new PrismaClient();
 
@@ -64,7 +63,7 @@ export async function seedOrders() {
       ordersData.push({
         userId: customer.id,
         totalAmount,
-        status: "Pending",
+        status: OrderStatus.Pending,
         items: {
           create: selectedArtworks.map((art) => ({
             artworkId: art.id,

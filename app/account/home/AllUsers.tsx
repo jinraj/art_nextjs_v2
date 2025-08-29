@@ -1,4 +1,4 @@
-"use client";
+'use client';
 
 import { useEffect, useMemo, useState } from "react";
 import {
@@ -19,31 +19,13 @@ import {
 } from "@/components/ui/dialog";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
-import { Role } from "@prisma/client";
+import { Role, User } from "@prisma/client";
 
-type Role = "Customer" | "Artist" | "Admin";
-
-type UserRow = {
-  id: string;
-  name: string;
-  email: string;
-  address?: string;
-  landmark?: string;
-  city?: string;
-  state?: string;
-  country?: string;
-  role: Role;
-  isApproved: boolean;
-  approvedAt?: string | Date | null;
-  createdAt?: string | Date | null;
-  updatedAt?: string | Date | null;
-  verifiedAt?: string | Date | null;
-};
 
 type ChipFilter = "pendingApproval" | "pendingVerification" | "total";
 
-export default function AllUsers({ allUsers }: { allUsers: UserRow[] }) {
-  const [rows, setRows] = useState<UserRow[]>(Array.isArray(allUsers) ? allUsers : []);
+export default function AllUsers({ allUsers }: { allUsers: User[] }) {
+  const [rows, setRows] = useState<User[]>(Array.isArray(allUsers) ? allUsers : []);
   useEffect(() => setRows(Array.isArray(allUsers) ? allUsers : []), [allUsers]);
 
   // chips
@@ -54,7 +36,7 @@ export default function AllUsers({ allUsers }: { allUsers: UserRow[] }) {
   const total = rows.length;
 
   // sort config: always descending
-  const [sortKey, setSortKey] = useState<keyof UserRow | "verifiedAt" | "approvedAt" | "createdAt" | "updatedAt">("createdAt");
+  const [sortKey, setSortKey] = useState<keyof User | "verifiedAt" | "approvedAt" | "createdAt" | "updatedAt">("createdAt");
   const sortDesc = true; // locked to desc
 
   const handleSort = (key: typeof sortKey) => {
@@ -90,10 +72,10 @@ export default function AllUsers({ allUsers }: { allUsers: UserRow[] }) {
   // -------- Edit modal state --------
   const [open, setOpen] = useState(false);
   const [saving, setSaving] = useState(false);
-  const [editing, setEditing] = useState<UserRow | null>(null);
-  const [form, setForm] = useState<Partial<UserRow>>({});
+  const [editing, setEditing] = useState<User | null>(null);
+  const [form, setForm] = useState<Partial<User>>({});
 
-  const beginEdit = (u: UserRow) => {
+  const beginEdit = (u: User) => {
     setEditing(u);
     setForm({
       ...u,
@@ -106,7 +88,7 @@ export default function AllUsers({ allUsers }: { allUsers: UserRow[] }) {
     setOpen(true);
   };
 
-  const onChange = (key: keyof UserRow, value: any) => setForm(prev => ({ ...prev, [key]: value }));
+  const onChange = (key: keyof User, value: any) => setForm(prev => ({ ...prev, [key]: value }));
 
   const saveEdit = async () => {
     if (!editing) return;
@@ -147,7 +129,7 @@ export default function AllUsers({ allUsers }: { allUsers: UserRow[] }) {
     }
   };
 
-  const deleteUser = async (u: UserRow) => {
+  const deleteUser = async (u: User) => {
     if (!confirm(`Delete user "${u.name}"? This cannot be undone.`)) return;
     try {
       const res = await fetch(`/api/users/${u.id}`, { method: "DELETE" });

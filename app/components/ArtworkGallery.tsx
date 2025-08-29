@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import { mockArtworks } from '../data/mockData';
+import { mockArtworks } from '../data/seedMockData';
 import { ScrollingColumn } from './ScrollingColumn';
 
 // Fisher-Yates shuffle

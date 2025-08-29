@@ -1,30 +1,31 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { User2, ShoppingBag, Star, Palette, Users, Loader2 } from 'lucide-react';
-// import { User, Artwork, Order, AppReview, Role } from '@/app/models/artwork';
 import MyDetails from './MyDetails';
 import AllOrders from './AllOrders';
 import Reviews from './Reviews';
 import AllArtworks from './AllArtworks';
 import AllUsers from './AllUsers';
 import { useSession } from 'next-auth/react';
-import { AppReview, Artwork, Order, Role, User } from '@prisma/client';
+import { AppReview, Artwork, Order, OrderItem, Role, User } from '@prisma/client';
 import Link from 'next/link';
 import AddArtwork from './AddArtwork';
 
+type ReviewWithUser = AppReview & { user: User };
+type OrderWithItems = Order & { items: OrderItem[] };
+type ArtworkWithArtist = Artwork & { artist: User };
 
 // --- Main Component ---
 const AccountPage: React.FC = () => {
   const { data: session } = useSession();
-  // State to manage the active section and data
   const [currentUser, setCurrentUser] = useState<User | null>(null);
   const [activeSection, setActiveSection] = useState<'details' | 'orders' | 'reviews' | 'artworks' | 'addartwork' | 'users'>('orders');
-  const [orders, setOrders] = useState<Order[] | null>(null);
-  const [artworks, setArtworks] = useState<Artwork[] | null>(null);
-  const [reviews, setReviews] = useState<AppReview[] | null>(null);
+  const [orders, setOrders] = useState<OrderWithItems [] | null>(null);
+  const [artworks, setArtworks] = useState<ArtworkWithArtist[] | null>(null);
+  const [reviews, setReviews] = useState<ReviewWithUser[] | null>(null);
   const [allUsers, setAllUsers] = useState<User[] | null>(null);
   const [isLoading, setIsLoading] = useState(false);
 
@@ -47,7 +48,7 @@ const AccountPage: React.FC = () => {
           case 'orders':
             res = await fetch('/api/orders');
             data = await res.json();
-            const sortedOrders = (data as Order[]).sort((a, b) => {
+            const sortedOrders = (data as OrderWithItems[]).sort((a, b) => {
               if (a.status === 'Pending' && b.status !== 'Pending') return -1;
               if (a.status !== 'Pending' && b.status === 'Pending') return 1;
               return new Date(a.orderedAt).getTime() - new Date(b.orderedAt).getTime();
@@ -59,14 +60,14 @@ const AccountPage: React.FC = () => {
             if (currentUser.role === Role.Admin || currentUser.role === Role.Artist) {
               res = await fetch('/api/artworks/byrole');
               data = await res.json();
-              setArtworks(data as Artwork[]);
+              setArtworks(data);
             }
             break;
 
           case 'reviews':
             res = await fetch('/api/reviews/byrole');
             data = await res.json();
-            setReviews(data as AppReview[]);
+            setReviews(data as ReviewWithUser[]);
             break;
 
           case 'users':
@@ -173,20 +174,19 @@ const AccountPage: React.FC = () => {
                   {activeSection === 'details' && (
                     <MyDetails currentUser={currentUser} />
                   )}
-                  {activeSection === 'orders' && (
+                  {activeSection === 'orders' && orders && (
                     <AllOrders orders={orders} currentUser={currentUser} />
                   )}
-                  {activeSection === 'reviews' && (
+                  {activeSection === 'reviews' && reviews && (
                     <Reviews reviews={reviews} currentUser={currentUser} />
                   )}
-                  {activeSection === 'artworks' && (
+                  {activeSection === 'artworks' && artworks &&(
                     <AllArtworks displayArtworks={artworks} currentUser={currentUser} />
                   )}
                   {activeSection === 'addartwork' && (
                     <AddArtwork />
                   )}
-                  {activeSection === 'users' &&
-                    currentUser.role === Role.Admin && (
+                  {activeSection === 'users' && allUsers && currentUser.role === Role.Admin && (
                       <AllUsers allUsers={allUsers} />
                     )}
                 </>
