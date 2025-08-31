@@ -10,13 +10,11 @@ import Reviews from './Reviews';
 import AllArtworks from './AllArtworks';
 import AllUsers from './AllUsers';
 import { useSession } from 'next-auth/react';
-import { AppReview, Artwork, Order, OrderItem, Role, User } from '@prisma/client';
+import { Role, User } from '@prisma/client';
 import Link from 'next/link';
 import AddArtwork from './AddArtwork';
+import { ArtworkWithArtist, OrderWithItems, ReviewWithUser } from '@/app/models/artwork';
 
-type ReviewWithUser = AppReview & { user: User };
-type OrderWithItems = Order & { items: OrderItem[] };
-type ArtworkWithArtist = Artwork & { artist: User };
 
 // --- Main Component ---
 const AccountPage: React.FC = () => {

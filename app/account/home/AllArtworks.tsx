@@ -5,12 +5,8 @@ import { Table, TableHead, TableHeader, TableRow, TableBody, TableCell } from "@
 import { Artwork, Role } from "@prisma/client";
 import { ArrowUp, ArrowDown, Edit, Trash } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { ArtworkWithArtist } from "@/app/models/artwork";
 
-type ArtworkWithArtist = Artwork & {
-  artist: {
-    name: string;
-  };
-};
 
 interface AllArtworksProps {
   displayArtworks: ArtworkWithArtist[];

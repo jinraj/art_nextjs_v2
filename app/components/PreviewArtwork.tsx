@@ -4,15 +4,16 @@ import { useState } from "react";
 import { useCartStore } from "../stores/cartStore";
 import { useRouter } from "next/navigation";
 import { ArtworkWithArtist } from "../models/artwork";
+import { useSession } from "next-auth/react";
 
-export const PreviewArtwork = ({ artwork, onClose }: {artwork: ArtworkWithArtist, onClose: any}) => {
+export const PreviewArtwork = ({ artwork, onClose }: { artwork: ArtworkWithArtist, onClose: any }) => {
     const Router = useRouter();
+    const { data: session } = useSession();
     const { addItem } = useCartStore();
     const [selectedImageIndex, setSelectedImageIndex] = useState(0);
     const [isLiked, setIsLiked] = useState(false);
     const [likes, setLikes] = useState(artwork.likes);
 
-    // NEW: button states
     const [addState, setAddState] = useState<"idle" | "adding" | "added">("idle");
     const [buyState, setBuyState] = useState<"idle" | "processing">("idle");
 
@@ -24,28 +25,35 @@ export const PreviewArtwork = ({ artwork, onClose }: {artwork: ArtworkWithArtist
     };
 
     const handleAddToCart = async () => {
-        if (addState !== "idle") return;
-        try {
-            setAddState("adding");
-            await addItem(artwork);
-            setAddState("added");
-            // brief “success” flash then settle back to idle
-            setTimeout(() => setAddState("idle"), 1200);
-        } catch (e) {
-            setAddState("idle");
-            console.error(e);
+        if (session?.user) {
+            if (addState !== "idle") return;
+            try {
+                setAddState("adding");
+                await addItem(artwork);
+                setAddState("added");
+                setTimeout(() => setAddState("idle"), 800);
+            } catch (e) {
+                setAddState("idle");
+                console.error(e);
+            }
+        }
+        else {
+            Router.push('/auth/login');
         }
     };
 
     const handleBuyNow = async () => {
-        if (buyState !== "idle") return;
-        setBuyState("processing");
-        // TODO: replace with your checkout flow (create order, redirect, etc.)
-        // simulate a short processing step
-        setTimeout(() => {
-            setBuyState("idle");
-            Router.push('/checkout')
-        }, 1500);
+        if (session?.user) {
+            if (buyState !== "idle") return;
+            setBuyState("processing");
+            setTimeout(() => {
+                setBuyState("idle");
+                Router.push('/checkout')
+            }, 800);
+        }
+        else {
+            Router.push('/auth/login');
+        }
     };
 
     return (
