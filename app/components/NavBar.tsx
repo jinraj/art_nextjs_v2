@@ -6,6 +6,7 @@ import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { useSession, signOut } from 'next-auth/react';
 import { useCartStore } from '../stores/cartStore';
+import { motion } from 'framer-motion';
 
 const navLinks: { text: string; href: string }[] = [
   { text: 'Home', href: '/' },
@@ -30,7 +31,7 @@ const NavLink: React.FC<NavLinkProps> = ({ text, href }) => (
 );
 
 export default function NavBar() {
-const { fetchCart, cartItems } = useCartStore();
+  const { fetchCart, cartItems } = useCartStore();
   const router = useRouter();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isProfileDropdownOpen, setIsProfileDropdownOpen] = useState(false);
@@ -70,15 +71,23 @@ const { fetchCart, cartItems } = useCartStore();
     <header className="fixed w-full z-50 backdrop-blur-md py-4 font-[Poppins] transition-all duration-300">
       <div className="container mx-auto flex justify-between items-center px-4">
         {/* Logo Section */}
-        <a href="/">
-          <div className="relative h-12 w-[40px]">
+        <a href="/" aria-label="It is meaningful - home">
+          <motion.div
+            // minimal interactive animations
+            whileHover={{ scale: 1.06, rotate: -6 }}
+            whileTap={{ scale: 0.94, rotate: 0 }}
+            transition={{ type: 'spring', stiffness: 360, damping: 22 }}
+            className="relative h-12 w-[40px] cursor-pointer"
+            role="button"
+          >
             <Image
               src="/resources/application/logo1.png"
               alt="My Art"
               fill
               className="object-contain"
+              draggable={false}
             />
-          </div>
+          </motion.div>
         </a>
 
         {/* Mobile-only Cart + Menu */}

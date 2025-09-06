@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useEffect, useRef, useState } from "react";
-import { motion, useAnimation } from "framer-motion";
+import { motion, useAnimation, Variants } from "framer-motion";
 
 // ButterflyIcon
 // Usage: <ButterflyIcon size={80} flapSpeed={1} />
@@ -24,12 +24,28 @@ export default function ButterflyIcon({ size = 80, flapSpeed = 1, className = ""
   const controls = useAnimation();
 
   // FOLLOW MOUSE: target and current positions
-  const targetRef = useRef({ x: window?.innerWidth / 2 ?? 0, y: window?.innerHeight / 2 ?? 0 });
-  const currentRef = useRef({ x: targetRef.current.x, y: targetRef.current.y });
+  // safe initial refs (SSR-friendly)
+  const targetRef = useRef({ x: 0, y: 0 });
+  const currentRef = useRef({ x: 0, y: 0 });
+
   const rafRef = useRef<number | null>(null);
 
   // expose position to cause rendered move
   const [, setTick] = useState(0);
+
+  // initialize to center only on client (avoids reading window during SSR)
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const x = Math.round(window.innerWidth / 2);
+    const y = Math.round(window.innerHeight / 2);
+    targetRef.current.x = x;
+    targetRef.current.y = y;
+    currentRef.current.x = x;
+    currentRef.current.y = y;
+    // trigger a render so the initial position shows up
+    setTick((t) => t + 1);
+  }, []);
+
 
   // start/stop wing animation via framer-motion controls
   useEffect(() => {
@@ -39,6 +55,12 @@ export default function ButterflyIcon({ size = 80, flapSpeed = 1, className = ""
       controls.start("rest");
     }
   }, [isFlying, controls]);
+
+  // place the butterfly at the top-right of the pointer by default
+  // tweak these to get the visual placement you like
+  const OFFSET_X = 36;  // pixels right of the pointer
+  const OFFSET_Y = -36; // pixels above the pointer (negative = up)
+
 
   // movement / flap detection combined
   useEffect(() => {
@@ -59,9 +81,9 @@ export default function ButterflyIcon({ size = 80, flapSpeed = 1, className = ""
       }
       if (clientX == null || clientY == null) return;
 
-      // set target for follow
-      targetRef.current.x = clientX;
-      targetRef.current.y = clientY - 8; // small vertical offset so butterfly is slightly above cursor (adjust if needed)
+      // set target for follow with offsets so butterfly is top-right of pointer
+      targetRef.current.x = clientX + OFFSET_X;
+      targetRef.current.y = clientY + OFFSET_Y;
 
       // flap logic (same as before)
       setIsFlying(true);
@@ -131,13 +153,15 @@ export default function ButterflyIcon({ size = 80, flapSpeed = 1, className = ""
   }, []); // run once
 
   // Wing animation variants (side-view feel)
-  const wingVariants = {
+  const wingVariants: Variants = {
     rest: {
-      rotate: [0, 0],
+      // single scalar is safer for the resting state
+      rotate: 0,
       y: 0,
       transition: { duration: 0.6 / flapSpeed, ease: "easeOut" },
     },
     fly: {
+      // keyframes for the flapping motion
       rotate: [0, -18, 10, -12, 6, -6, 0],
       y: [0, -3, 2, -2, 1, -1, 0],
       transition: {
@@ -146,14 +170,13 @@ export default function ButterflyIcon({ size = 80, flapSpeed = 1, className = ""
         repeat: Infinity,
       },
     },
-  } as const;
+  };
 
   // A compact side-view butterfly built with simple shapes + SVG for crispness.
   const w = size;
   const h = Math.round(size * 0.8);
 
   // Use the currentRef position to render the fixed-position wrapper.
-  // We center the element on the pointer using transform: translate(-50%,-50%)
   const left = currentRef.current.x;
   const top = currentRef.current.y;
 
@@ -177,7 +200,7 @@ export default function ButterflyIcon({ size = 80, flapSpeed = 1, className = ""
       aria-label="It Is Meaningful - butterfly icon"
     >
       {/* Body (slightly tilted for side profile) */}
-      <svg viewBox="0 0 120 96" width={w} height={h} preserveAspectRatio="xMidYMid meet">
+      <svg viewBox="0 0 120 96" width={w} height={h} preserveAspectRatio="xMidYMid meet" style={{ transform: "rotate(-45deg)" }}>
         <defs>
           <linearGradient id="bodyGrad" x1="0" x2="1">
             <stop offset="0%" stopColor="#FFD57A" />
@@ -199,7 +222,6 @@ export default function ButterflyIcon({ size = 80, flapSpeed = 1, className = ""
           initial="rest"
           animate={controls}
           variants={wingVariants}
-          transform-origin="64px 48px"
           style={{ transformBox: "fill-box" }}
         >
           <path
@@ -214,7 +236,7 @@ export default function ButterflyIcon({ size = 80, flapSpeed = 1, className = ""
         </motion.g>
 
         {/* Right (front) wing - main colorful wing that flaps */}
-        <motion.g initial="rest" animate={controls} variants={wingVariants} transform-origin="64px 48px" style={{ transformBox: "fill-box" }}>
+        <motion.g initial="rest" animate={controls} variants={wingVariants} style={{ transformBox: "fill-box" }}>
           <path d="M50 24 C 86 0, 110 22, 86 48 C 70 68, 52 80, 42 64 C 36 52, 40 36, 50 24 Z" fill="url(#wingGradA)" />
 
           {/* decorative patterns inside wing */}
