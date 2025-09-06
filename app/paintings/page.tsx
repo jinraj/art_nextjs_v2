@@ -5,6 +5,7 @@ import TitleLayout from '../components/TitleLayout';
 import ImageCard from '../components/ImageCard';
 import { artType } from '../data/app';
 import { ArtworkWithArtist } from '../models/artwork';
+import { ArtType } from '@prisma/client';
 
 const Paintings = () => {
   const [paintings, setPaintings] = useState<ArtworkWithArtist[]>([]);
@@ -23,7 +24,7 @@ const Paintings = () => {
     const fetchArtworks = async () => {
       try {
         setLoading(true);
-        const res = await fetch('/api/artworks', {
+        const res = await fetch(`/api/artworks/${ArtType.Paintings}`, {
           method: 'GET',
           headers: {
             'Content-Type': 'application/json',
@@ -37,9 +38,7 @@ const Paintings = () => {
 
         const data = await res.json();
         const artworks: ArtworkWithArtist[] = Array.isArray(data) ? data : data?.artworks || [];
-
-        const filtered = artworks.filter(item => item.artType === artType.Paintings.name);
-        setPaintings(filtered);
+        setPaintings(artworks);
       } catch (err) {
         console.error('Error fetching artworks:', err);
         setError((err as Error).message);
