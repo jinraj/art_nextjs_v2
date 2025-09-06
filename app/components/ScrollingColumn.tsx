@@ -2,14 +2,12 @@ import { useEffect, useRef } from "react";
 import Image from 'next/image';
 
 // New reusable component for a single scrolling column
-export const ScrollingColumn = ({ images, divHeight }: { images: any[], divHeight: string }) => {
+export const ScrollingColumn = ({ images, divHeight, scrollSpeed }: { images: any[], divHeight: string, scrollSpeed: number }) => {
   const animatedColumnRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (animatedColumnRef.current) {
-      // Generate a random duration between 20 and 40 seconds
-      const duration = Math.random() * 20 + 80;
-      animatedColumnRef.current.style.animationDuration = `${duration}s`;
+      animatedColumnRef.current.style.animationDuration = `${scrollSpeed}s`;
     }
   }, []);
 

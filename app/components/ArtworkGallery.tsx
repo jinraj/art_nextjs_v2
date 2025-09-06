@@ -23,7 +23,7 @@ function splitIntoGroups(array: any[], groupsCount: number) {
 
 export default function ArtworkGallery() {
   const [chunkedArtworks, setChunkedArtworks] = React.useState<any[][]>([]);
-
+  const scrollSpeeds = [100, 80, 50, 95, 70]
   React.useEffect(() => {
     const shuffled = shuffleArray([...mockArtworks]);
     const chunked = splitIntoGroups(shuffled, 5);
@@ -47,8 +47,8 @@ export default function ArtworkGallery() {
         {chunkedArtworks.map((column, columnIndex) => {
           const ht =
             columnIndex === 0 || columnIndex === chunkedArtworks.length - 1
-              ? 'h-[700px]'
-              : 'h-[550px]';
+              ? 'h-[1000px]'
+              : columnIndex === 1 || columnIndex === chunkedArtworks.length - 2 ? 'h-[850px]' : 'h-[750px]';
 
           // Show only first and last column on mobile
           const isMobileHidden =
@@ -58,7 +58,7 @@ export default function ArtworkGallery() {
 
           return (
             <div key={columnIndex} className={isMobileHidden}>
-              <ScrollingColumn images={column} divHeight={ht} />
+              <ScrollingColumn images={column} divHeight={ht} scrollSpeed={scrollSpeeds[columnIndex]} />
             </div>
           );
         })}

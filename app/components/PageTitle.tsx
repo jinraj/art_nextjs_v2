@@ -7,16 +7,9 @@ import { useRouter } from 'next/navigation';
 
 export default function PageTitle() {
   const Router = useRouter();
-  const colorPalette = {
-    amber: '#FFC000',
-    airForceBlue: '#658F9F',
-    silver: '#BDC8CC',
-    babyPowder: '#FAF9F6',
-    alabaster: '#EDEADE',
-  };
   return (
     // Main container for the hero section, centered vertically and horizontally
-    <div className="flex flex-col items-center justify-center h-[75vh] text-center p-5">
+    <div className="flex flex-col items-center justify-center h-[75vh] text-center p-5 ">
       <h1 className="text-4xl sm:text-6xl md:text-7xl font-black text-custom-airforce-blue mb-15 homepage-title">
         It's Meaningful
       </h1>
