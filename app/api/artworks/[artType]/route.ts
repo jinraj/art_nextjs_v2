@@ -47,18 +47,18 @@ export async function GET(request: NextRequest, context: any) {
     const cached = global.ARTWORKS_CACHE![cacheKey];
 
     // Serve from local cache if fresh
-    // if (cached && now - cached.ts < TTL_MS) {
-    //   console.log("fetching artworks from cache")
-    //   return NextResponse.json(
-    //     { artworks: cached.data, source: 'cache' },
-    //     {
-    //       status: 200,
-    //       headers: {
-    //         'Cache-Control': 'public, max-age=0, s-maxage=86400, stale-while-revalidate=86400',
-    //       },
-    //     }
-    //   );
-    // }
+    if (cached && now - cached.ts < TTL_MS) {
+      console.log("fetching artworks from cache")
+      return NextResponse.json(
+        { artworks: cached.data, source: 'cache' },
+        {
+          status: 200,
+          headers: {
+            'Cache-Control': 'public, max-age=0, s-maxage=86400, stale-while-revalidate=86400',
+          },
+        }
+      );
+    }
     
     console.log("fetching artworks from db - ", prismaArtType);
     // Fetch from DB: filter by artType and isHidden:false, sorted newest first.
